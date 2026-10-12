@@ -7,7 +7,6 @@ use std::process::Command;
 use tauri::{AppHandle, Manager};
 use tauri_plugin_fs::FsExt;
 
-// ---------- Config API ---------------------------------------------------
 
 #[tauri::command]
 pub fn config_init(app: AppHandle) -> Result<Value, String> {

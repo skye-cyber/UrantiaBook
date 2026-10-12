@@ -4,9 +4,9 @@
   "version": "1.3.4",
   "identifier": "com.skye.ub",
   "build": {
-    "beforeDevCommand": "",
+    "beforeDevCommand": "npm run dev:react",
     "devUrl": "http://localhost:4043",
-    "beforeBuildCommand": "npm run type-check",
+    "beforeBuildCommand": "npm run type-check && npm run build:react",
     "frontendDist": "../dist"
   },
   "app": {

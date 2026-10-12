@@ -50,7 +50,7 @@ module.exports = {
                 'soft-md': '0 4px 16px rgba(0, 0, 0, 0.08)',
                 'soft-lg': '0 8px 32px rgba(0, 0, 0, 0.1)',
 
-                // For your message component specifically
+                // For  message component specifically
                 'message': '0 2px 8px rgba(0, 0, 0, 0.1)',
                 'message-hover': '0 4px 16px rgba(0, 0, 0, 0.12)',
             },

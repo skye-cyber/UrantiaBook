@@ -2,7 +2,7 @@ import json
 
 
 def foreword_sectionTitles_validator():
-    # --- Load your raw paragraphs JSON ---
+    # --- Load  raw paragraphs JSON ---
     with open('foreword_structured.json') as f:
         raw_data = json.load(f)
 
@@ -35,7 +35,7 @@ def foreword_sectionTitles_validator():
 
 
 def central_superuniverses_sectionTitles_validator():
-    # --- Load your raw paragraphs JSON ---
+    # --- Load  raw paragraphs JSON ---
     with open('central_superuniverses_structured.json') as f:
         raw_data = json.load(f)
 
@@ -68,7 +68,7 @@ def central_superuniverses_sectionTitles_validator():
 
 
 def local_universe_sectionTitles_validator():
-    # --- Load your raw paragraphs JSON ---
+    # --- Load  raw paragraphs JSON ---
     with open('Local_Universe_structured.json') as f:
         raw_data = json.load(f)
 
@@ -103,7 +103,7 @@ def local_universe_sectionTitles_validator():
 
 
 def history_urantia_sectionTitles_validator():
-    # --- Load your raw paragraphs JSON ---
+    # --- Load  raw paragraphs JSON ---
     with open('History_of_Urantia_structured.json') as f:
         raw_data = json.load(f)
 
@@ -136,7 +136,7 @@ def history_urantia_sectionTitles_validator():
 
 
 def jesus_life_teachings_sectionTitles_validator():
-    # --- Load your raw paragraphs JSON ---
+    # --- Load  raw paragraphs JSON ---
     with open('Life_and_Teachings_of_Jesus_structured.json') as f:
         raw_data = json.load(f)
 

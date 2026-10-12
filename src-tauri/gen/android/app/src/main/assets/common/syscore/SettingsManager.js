@@ -11,7 +11,7 @@ class SettingsManager {
         this.subscribe(updateAppState)
     }
 
-    // Load from disk (using your existing fs API)
+    // Load from disk (using  existing fs API)
     async loadSettings() {
         try {
             const saved = await window.ubook.fs.read(
