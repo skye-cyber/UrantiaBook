@@ -125,7 +125,7 @@ npm run tauri build -- --bundles deb
 npm run tauri build -- --bundles appimage
 npm run tauri build -- --bundles nsis
 ```
-
+ 
 ## Building for Mobile
 
 Tauri 2 supports Android and iOS. Android builds work on Linux, macOS, and
