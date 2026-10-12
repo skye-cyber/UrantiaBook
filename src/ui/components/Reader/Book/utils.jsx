@@ -1,3 +1,5 @@
+import { ubook } from "../../../../common/ubook";
+
 const partNameMap = {
     0: 'Foreword',
     1: 'Central and Superuniverse',
@@ -117,7 +119,7 @@ export class ContentHelper {
     }
     static async isFavourited(struct) {
         // Read Favourites file
-        const fav = await window.ubook.favourites.readAll();
+        const fav = await ubook.favourites.readAll();
 
         if (!fav || !Array.isArray(fav.fav)) return;
 
@@ -130,7 +132,7 @@ export class ContentHelper {
         return matchFound
     }
     static async isBookmarked(struct) {
-        const bookmarks = await window.ubook.bookmarks.readAll();
+        const bookmarks = await ubook.bookmarks.readAll();
 
         if (!bookmarks || !Array.isArray(bookmarks.bookmark)) return;
 

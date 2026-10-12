@@ -82,7 +82,7 @@ export class HightlightSearchEngine {
                 parent.insertBefore(span.firstChild, span);
             }
             try {
-                parent.removeChild(span);
+                parent?.removeChild(span);
             } catch (err) { }
         });
     }

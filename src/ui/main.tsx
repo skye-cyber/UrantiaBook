@@ -2,12 +2,6 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 import App from './App.jsx';
 import { invoke } from '@tauri-apps/api/core';
-// import '../common/polyfills/polyfills';
-import { ubook } from '../common/ubook';
-
-
-declare global { interface Window { ubook: typeof ubook } }
-window.ubook = ubook;
 
 // Optimized mounting with better error handling and performance
 const mountApp = async () => {

@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { appState } from '../../../State/appState';
 import { modalmanager } from '../../../../common/Status/Manager';
 import { StateManager } from '../../../../common/syscore/StatesManager';
+import { ubook } from '../../../../common/ubook';
 export const NotesComposer = () => {
     const noteModal = useRef(null);
     const noteBox = useRef(null);
@@ -50,7 +51,7 @@ export const NotesComposer = () => {
             content: appState.selectedHTML
         };
 
-        const status_ok = window.ubook.notes.save(note);
+        const status_ok = ubook.notes.save(note);
         if (status_ok) {
             modalmanager.showMessage('Note saved successfully', 'success');
         } else {
@@ -107,7 +108,7 @@ export const NotesComposer = () => {
                         id="note-comment"
                         onInput={onInputHandler}
                         className="w-full h-32 p-3 border border-gray-300 rounded-lg focus:border-blue-500 resize-none"
-                        placeholder="Enter your comment here..."
+                        placeholder="Enter  comment here..."
                     ></textarea>
                     <div className="flex justify-end space-x-3 mt-4">
                         <button

@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef } from 'react';
+import { StateManager } from '../../common/syscore/StatesManager';
 
 export const NotesPage = ({ }) => {
     const noteui = useRef(null);
@@ -32,6 +33,7 @@ export const NotesPage = ({ }) => {
             noteui.current.classList.add('pointer-events-none');
         }, 400);
     })
+    StateManager.set('closeNotes', closeNotes)
 
     useEffect(() => {
         document.addEventListener('show-notes', showNotes)
@@ -69,7 +71,7 @@ export const NotesPage = ({ }) => {
                     ✖
                 </button>
                 <h2 className="text-2xl font-bold mb-4 border-b border-gray-300 dark:border-cyan-400 select-none">📝 Notes</h2>
-                <section id="notecontent" className="react-portal-root w-full max-h-[80vh] xl:max-h-[95vh] overflow-y-auto scrollbar-custom pb-16">
+                <section id="notecontent" className="react-portal-root w-full max-h-[80vh] xl:max-h-[95vh] overflow-y-auto overflow-x-hidden scrollbar-custom pb-16">
                 </section>
             </div>
         </div>

@@ -3,6 +3,7 @@ import { TTSLoaderUI } from '../StatusUI/ttsaction';
 import { appState } from '../../State/appState';
 import { StateManager } from '../../../common/syscore/StatesManager';
 import { modalmanager } from '../../../common/Status/Manager';
+import { ubook } from '../../../common/ubook';
 
 export const PlayerTooltip = ({ }) => {
     const playertooltip = useRef(null)
@@ -50,12 +51,12 @@ export const PlayerTooltip = ({ }) => {
 
             StateManager.get('showTTSLoader')()
 
-            const audio_file = await window.ubook.tts.generate(text)
+            const audio_file = await ubook.tts.generate(text)
             if (audio_file) {
                 StateManager.get('hideTTSLoader')();
 
                 //start playing
-                await window.ubook.player.play(audio_file)
+                await ubook.player.play(audio_file)
 
                 displayPlayerTool();
                 SetIsPlaying(true);
@@ -79,13 +80,13 @@ export const PlayerTooltip = ({ }) => {
 
     const onPlayPause = useCallback(() => {
         if (!isPlaying) {
-            const status = window.ubook.player.resume();
+            const status = ubook.player.resume();
 
             if (status === 'resumed') {
                 SetIsPlaying(true);
             }
         } else {
-            const status = window.ubook.player.pause();
+            const status = ubook.player.pause();
 
             if (status === "paused") {
                 SetIsPlaying(false);
@@ -97,7 +98,7 @@ export const PlayerTooltip = ({ }) => {
         setTimeout(() => {
             SetIsPlaying(false);
 
-            const status = window.ubook.player.stop();
+            const status = ubook.player.stop();
 
             status === "stopped" ? hidePlayerTool() : '';
         }, 100)
@@ -114,7 +115,7 @@ export const PlayerTooltip = ({ }) => {
 
         if (isPlaying) {
             // Pause first
-            const status = window.ubook.player.pause();
+            const status = ubook.player.pause();
 
             if (status === "paused") {
                 SetIsPlaying(false);
@@ -122,7 +123,7 @@ export const PlayerTooltip = ({ }) => {
             }
         }
 
-        const newOffset = window.ubook.player.fastForward(5); // 5 seconds
+        const newOffset = ubook.player.fastForward(5); // 5 seconds
 
         if (!play_status && newOffset) {
             SetIsPlaying(true)
@@ -134,7 +135,7 @@ export const PlayerTooltip = ({ }) => {
 
         if (isPlaying) {
             // Pause first
-            const status = window.ubook.player.pause();
+            const status = ubook.player.pause();
 
             if (status === "paused") {
                 //statusLabel.current.textContent = 'Paused';
@@ -144,7 +145,7 @@ export const PlayerTooltip = ({ }) => {
             }
         }
 
-        const newOffset = window.ubook.player.rewind(5); // 5 seconds
+        const newOffset = ubook.player.rewind(5); // 5 seconds
 
         if (!play_status && newOffset) {
             SetIsPlaying(true)

@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { ContentHelper } from './utils';
 import { Textual } from './ContentWrapper';
+import { ubook } from '../../../../common/ubook';
 
 export const QuickRead = ({ }) => {
     //const data = useRef(null)
@@ -11,7 +12,7 @@ export const QuickRead = ({ }) => {
     const reload_icon_ref = useRef(null)
 
     const get_data = useCallback(async (rondom_part = ContentHelper.randomized_part()) => {
-        return await window.ubook.content.read(rondom_part)
+        return await ubook.content.read(rondom_part)
     })
 
     const set_content = useCallback(async () => {
