@@ -1,3 +1,4 @@
+import { reactPortalBridge } from "../../../common/react-portal-bridge";
 import { modalmanager } from "../../../common/Status/Manager";
 import { waitForElement } from "../../../common/syscore/dom_utils";
 import { StateManager } from "../../../common/syscore/StatesManager";
@@ -45,17 +46,13 @@ export class BookNavigator {
             } else if (Number(paper_id) >= 120 && Number(paper_id) < 196) {
                 part_id = 4
             }
-            console.log(part_id, paper_id)
-
             const REF_CONTENT = {
                 part_id: part_id ?? 0,
                 paper_id: Number(paper_id),
                 section_number: Number(section_number),
                 paragraph_number: Number(paragraph_number),
             }
-            console.log(REF_CONTENT)
-            loadingspinner.open('Loading content, please wait...')
-            let ready = false // For cloasing loader
+            const loaderPID = loadingspinner.open('Loading content, please wait...')
             /*
             * STEP1: Prepare part content
             * true no items interface display
@@ -68,10 +65,7 @@ export class BookNavigator {
             //STEP3: find and click right section
             waitForElement(`[data-tag="${REF_CONTENT.part_id}-${REF_CONTENT.paper_id}-${REF_CONTENT.section_number}"]`, (e) => {
                 e.click()
-                ready = true
-                setTimeout(() => {
-                    loadingspinner.close();
-                }, 300)
+                reactPortalBridge.closeComponent(loaderPID)
             })
         } catch (err) {
             console.log(err)

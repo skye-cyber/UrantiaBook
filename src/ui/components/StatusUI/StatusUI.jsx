@@ -1,8 +1,8 @@
-import React, { useCallback, useRef } from 'react';
+import { useCallback, useRef } from 'react';
 import { hideStatus } from './util';
 import ErrorBoundary from '../ErrorHandler/ErrorBoundary';
 
-export const LoadingSpinner = ({ text = "Processing, please wait..." }) => {
+export const LoadingSpinner_primitive = ({ text = "Processing, please wait..." }) => {
     const Spinner = useRef(null)
     const backdrop = useRef(null);
     const SpinnerBody = useRef(null)
@@ -21,6 +21,151 @@ export const LoadingSpinner = ({ text = "Processing, please wait..." }) => {
         </>
     )
 }
+
+// ============================================================
+// DualRingGlassLoader
+// Reference: Glassmorphic dual-ring — light, refined, neutral
+// Drop-in replacement for LoadingSpinner
+// ============================================================
+// ============================================================
+// DualRingGlassLoader
+// Reference: Glassmorphic dual-ring — light, refined, neutral
+// Drop-in replacement for LoadingSpinner
+//
+// FIX: rotation is isolated on wrapper elements so the border
+// pseudo-spinner never has its transform context clobbered.
+// ============================================================
+export const DualRingGlassLoader = ({
+    text = "Processing, please wait...",
+    ringColor = "#3b82f6",
+    ringColorDeep = "#2563eb",
+    ringTrack = "rgba(59, 130, 246, 0.25)",
+    ringTrackDeep = "rgba(59, 130, 246, 0.15)",
+    cardBg = "rgba(255, 255, 255, 0.92)",
+    cardBorder = "rgba(255, 255, 255, 0.5)",
+    accentColor = "rgb(191, 219, 254)", // blue-200
+}) => {
+    const backdrop = useRef(null);
+    const card = useRef(null);
+    const spinner = useRef(null);
+    const spinnerText = useRef(null);
+
+    return (
+        <>
+            {/* Backdrop — light overlay with subtle blur */}
+            <div
+                ref={backdrop}
+                className="fixed inset-0 z-[41] bg-black/40 backdrop-brightness-50 animate-fade-in transition-all duration-300"
+            />
+
+            <section className="fixed inset-1 flex items-center justify-center z-41">
+                <div
+                    ref={card}
+                    className="relative flex flex-col items-center rounded-2xl p-7 shadow-2xl border animate-enter transition-all duration-700 opacity-100 backdrop-blur-md w-fit min-w-[280px] max-w-[400px]"
+                    style={{ background: cardBg, borderColor: cardBorder }}
+                >
+                    {/* Dual-ring spinner — rotation on wrappers, border on children */}
+                    <div ref={spinner} className="relative h-14 w-14 my-1">
+                        {/* Outer ring wrapper — rotates */}
+                        <div className="absolute inset-0 animate-dual-ring-outer will-change-transform">
+                            <div
+                                className="h-full w-full rounded-full"
+                                style={{
+                                    border: `3px solid ${ringTrack}`,
+                                    borderTopColor: ringColor,
+                                }}
+                            />
+                        </div>
+
+                        {/* Inner ring wrapper — counter-rotates for depth */}
+                        <div className="absolute inset-2 animate-dual-ring-inner will-change-transform">
+                            <div
+                                className="h-full w-full rounded-full"
+                                style={{
+                                    border: `2px solid ${ringTrackDeep}`,
+                                    borderBottomColor: ringColorDeep,
+                                }}
+                            />
+                        </div>
+                    </div>
+
+                    {/* Loader text with soft pulse */}
+                    <p
+                        ref={spinnerText}
+                        className="mt-5 text-base font-medium tracking-tight text-gray-700 animate-soft-pulse text-truncate"
+                    >
+                        {text}
+                    </p>
+
+                    {/* Subtle brand accent line */}
+                    <div
+                        className="mt-3 h-0.5 w-12 rounded-full"
+                        style={{ background: accentColor }}
+                    />
+                </div>
+            </section>
+        </>
+    );
+};
+
+export const GradientOrbLoader = ({
+    text = "Deploying preview...",
+    accentFrom = "#8b5cf6",
+    accentVia = "#ec4899",
+    accentTo = "#3b82f6",
+}) => {
+    const backdrop = useRef(null);
+    const card = useRef(null);
+    const orb = useRef(null);
+    const spinnerText = useRef(null);
+
+    return (
+        <>
+            {/* Backdrop — deep, saturated blur for premium feel */}
+            <div
+                ref={backdrop}
+                className="fixed inset-0 z-[41] bg-black/70 backdrop-blur-xl backdrop-saturate-150 animate-fade-in transition-all duration-200"
+            />
+
+            <section className="fixed inset-1 flex items-center justify-center z-41">
+                <div
+                    ref={card}
+                    className="relative overflow-hidden bg-[#101116]/85 border border-white/[0.08] rounded-[20px] px-12 py-9 shadow-[0_40px_80px_-20px_rgba(0,0,0,0.8),inset_0_1px_0_rgba(255,255,255,0.05)] backdrop-blur-2xl flex flex-col items-center animate-enter transition-all duration-500 opacity-100 w-fit min-w-72 max-w-[400px]"
+                >
+                    {/* Ambient gradient glow behind the orb */}
+                    <div
+                        aria-hidden="true"
+                        className="pointer-events-none absolute -top-[60%] left-1/2 -translate-x-1/2 h-[240px] w-[240px] rounded-full blur-[20px] opacity-80 animate-orb-glow"
+                        style={{
+                            background: `radial-gradient(circle, ${accentFrom}73 0%, transparent 65%)`,
+                        }}
+                    />
+
+                    {/* Conic gradient orb */}
+                    <div
+                        ref={orb}
+                        className="relative h-12 w-12 rounded-full animate-orb-rotate z-10 shadow-[0_0_24px_rgba(139,92,246,0.5),0_0_60px_rgba(236,72,153,0.25)]"
+                        style={{
+                            background: `conic-gradient(from 0deg, ${accentFrom}, ${accentVia}, #f59e0b, #10b981, ${accentTo}, ${accentFrom})`,
+                        }}
+                    >
+                        {/* Inner cutout to create ring illusion */}
+                        <div className="absolute inset-1.5 rounded-full bg-[#101116]" />
+                    </div>
+
+                    {/* Gradient text */}
+                    <p
+                        ref={spinnerText}
+                        className="relative z-10 mt-5 text-[13px] font-medium tracking-[0.02em] bg-gradient-to-r from-neutral-200 to-neutral-400 bg-clip-text text-transparent text-truncate"
+                    >
+                        {text}
+                    </p>
+                </div>
+            </section>
+        </>
+    );
+};
+
 
 export const StatusUI = ({ isOpen, onToggle }) => {
     const hideErrorModal = useCallback(() => {

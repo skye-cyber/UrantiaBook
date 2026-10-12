@@ -32,7 +32,7 @@ export const NoteCard = ({ note, portal_id }) => {
     }
 
     return (
-        <div onClick={() => BookNavigator.loadByPartRef(NoteRefNumber)} className='group relative p-2 sm:p-5 mb-4 rounded-2xl shadow-xl border border-transparent transition-all bg-gradient-to-br from-white via-gray-100 to-blue-100 dark:from-gray-800 dark:via-gray-900 dark:to-indigo-900 hover:border-blue-400 dark:hover:border-indigo-400 hover:scale-[1.01] hover:shadow-2xl transform transition-all duration-150 ease-in-out mx-1'>
+        <div onClick={() => BookNavigator.loadByPartRef(NoteRefNumber)} className='group relative p-2 sm:p-5 mb-4 rounded-2xl shadow-xl border border-transparent transition-all bg-gradient-to-br from-white via-gray-100 to-blue-100 dark:from-gray-800 dark:via-gray-900 dark:to-indigo-900 hover:border-blue-400 dark:hover:border-indigo-400 hover:scale-[1.01] hover:shadow-2xl transform transition-all duration-150 ease-in-out mx-1 cursor-pointer'>
             <section className="flex justify-between">
                 <div className="mb-2 text-xs text-gray-600 dark:text-gray-400 italic transition-colors duration-500">
                     {new Date(note.timestamp).toLocaleString()}

@@ -1,12 +1,13 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { resolve } from 'path';
+import tailwindcss from '@tailwindcss/vite';
 
 const host = process.env.TAURI_DEV_HOST;
 
 // https://vitejs.dev/config/
 export default defineConfig({
-    plugins: [react()],
+    plugins: [react(), tailwindcss()],
 
     css: {
         // Tailwind v4 handles its own PostCSS pipeline.
@@ -73,11 +74,11 @@ export default defineConfig({
 
     resolve: {
         alias: {
-            '@': resolve(import.meta.dirname,'src/ui'), //resolve(__dirname, 'src/ui'),
-            '@assets': resolve(import.meta.dirname,'src/assets'), //resolve(__dirname, 'src/assets'),
-            '@common': resolve(import.meta.dirname,'src/common'), //resolve(__dirname, 'src/common'),
-            '@styles': resolve(import.meta.dirname,'src/style'), //resolve(__dirname, 'src/styles'),
-            '@types': resolve(import.meta.dirname,'src/types'), //resolve(__dirname, 'src/types'),
+            '@': resolve(import.meta.dirname, 'src/ui'), //resolve(__dirname, 'src/ui'),
+            '@assets': resolve(import.meta.dirname, 'src/assets'), //resolve(__dirname, 'src/assets'),
+            '@common': resolve(import.meta.dirname, 'src/common'), //resolve(__dirname, 'src/common'),
+            '@styles': resolve(import.meta.dirname, 'src/style'), //resolve(__dirname, 'src/styles'),
+            '@types': resolve(import.meta.dirname, 'src/types'), //resolve(__dirname, 'src/types'),
             // NOTE: Node polyfills removed — no longer needed with Tauri.
         },
     }
