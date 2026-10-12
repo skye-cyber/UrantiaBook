@@ -1,19 +1,81 @@
 import { modalmanager } from "../../../common/Status/Manager";
+import { waitForElement } from "../../../common/syscore/dom_utils";
 import { StateManager } from "../../../common/syscore/StatesManager";
+import { ContentLoader_ins } from "../Panels/content_loader";
+import { loadingspinner } from "../StatusUI/Helpers/loader";
+
+export const PART_ID_MAP = {
+    0: 'Foreword',
+    1: 'SuperUniverse',
+    2: 'LocalUniverse',
+    3: 'HistoryOfUrantia',
+    4: 'JesusTeachings'
+}
+
 
 export class BookNavigator {
     static nextSection() {
         const current_section = StateManager.get('active_section')
         if (!current_section) return modalmanager.showMessage('Activate/Open a section first.', 'info')
-            const nextEntry = current_section.nextElementSibling || null;
+        const nextEntry = current_section.nextElementSibling || null;
 
         nextEntry ? nextEntry.click() : modalmanager.showMessage('End of Chapter!', 'warning')
     }
     static previousSection() {
         const current_section = StateManager.get('active_section')
         if (!current_section) return modalmanager.showMessage('Activate/Open a section first.', 'info')
-            const previousEntry = current_section.previousElementSibling || null;
+        const previousEntry = current_section.previousElementSibling || null;
 
         previousEntry ? previousEntry.click() : modalmanager.showMessage('Reached Beginning of Chapter!', 'warning')
+    }
+    static loadByPartRef(REF) {
+        try {
+            const [paper_id, trailing] = REF.split(':')
+            const [section_number, paragraph_number] = trailing.split('.')
+
+            let part_id = null;
+            if (Number(paper_id) === 0) {
+                part_id = 0
+            } else if (Number(paper_id) >= 1 && Number(paper_id) < 32) {
+                part_id = 1
+            } else if (Number(paper_id) >= 32 && Number(paper_id) < 56) {
+                part_id = 2
+            } else if (Number(paper_id) >= 57 && Number(paper_id) < 119) {
+                part_id = 3
+            } else if (Number(paper_id) >= 120 && Number(paper_id) < 196) {
+                part_id = 4
+            }
+            console.log(part_id, paper_id)
+
+            const REF_CONTENT = {
+                part_id: part_id ?? 0,
+                paper_id: Number(paper_id),
+                section_number: Number(section_number),
+                paragraph_number: Number(paragraph_number),
+            }
+            console.log(REF_CONTENT)
+            loadingspinner.open('Loading content, please wait...')
+            let ready = false // For cloasing loader
+            /*
+            * STEP1: Prepare part content
+            * true no items interface display
+            */
+            ContentLoader_ins[`set${PART_ID_MAP[REF_CONTENT.part_id]}`](true)
+
+            //STEP2: close Notes page
+            StateManager.get('closeNotes')()
+
+            //STEP3: find and click right section
+            waitForElement(`[data-tag="${REF_CONTENT.part_id}-${REF_CONTENT.paper_id}-${REF_CONTENT.section_number}"]`, (e) => {
+                e.click()
+                ready = true
+                setTimeout(() => {
+                    loadingspinner.close();
+                }, 300)
+            })
+        } catch (err) {
+            console.log(err)
+        }
+
     }
 }
