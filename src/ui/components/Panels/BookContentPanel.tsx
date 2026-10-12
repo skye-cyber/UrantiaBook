@@ -5,8 +5,8 @@ import { StateManager } from '../../../common/syscore/StatesManager';
 import { ContentLoader_ins } from './content_loader';
 
 export const BookContentPanel = ({ }) => {
-    const panel = useRef < HTMLDivElement | null > (null);
-    const forewordRef = useRef < HTMLLIElement | null > (null);
+    const panel = useRef<HTMLDivElement | null>(null);
+    const forewordRef = useRef<HTMLLIElement | null>(null);
 
     const { isDark, setTheme } = useTheme();
 
@@ -208,31 +208,61 @@ export const BookContentPanel = ({ }) => {
                     className="h-fit max-h-[72%] overflow-y-auto scrollbar-custom mx-2 sm:mx-1 mt-2 rounded-lg bg-indigo-950/40 dark:bg-[#002b36]"
                 >
                     <ul className="py-1">
-                        <div onClick={() => ContentLoader_ins.setForeword()} className={rowBase}>
+                        <div onClick={() => {
+                            ContentLoader_ins.setForeword()
+                            hidePanel()
+                        }
+                        } className={rowBase}>
                             <li ref={forewordRef} id="foreword" className={rowIcon}>📖 Foreword</li>
                         </div>
-                        <div onClick={() => ContentLoader_ins.setSuperUniverse()} className={rowBase}>
+                        <div onClick={() => {
+                            ContentLoader_ins.setSuperUniverse()
+                            hidePanel()
+                        }
+                        } className={rowBase}>
                             <li id="central-and-superuniverse" className={rowIcon}>
                                 <span className="bg-pink-600/0 rounded-full px-0.5">🌀</span>&nbsp; The Central and Superuniverses
                             </li>
                         </div>
-                        <div onClick={() => ContentLoader_ins.setLocalUniverse()} className={rowBase}>
+                        <div onClick={() => {
+                            ContentLoader_ins.setLocalUniverse()
+                            hidePanel()
+                        }
+                        } className={rowBase}>
                             <li id="local-universe" className={rowIcon}>🌍 The Local Universe</li>
                         </div>
-                        <div onClick={() => ContentLoader_ins.setHistoryOfUrantia()} className={rowBase}>
+                        <div onClick={() => {
+                            ContentLoader_ins.setHistoryOfUrantia()
+                            hidePanel()
+                        }
+                        } className={rowBase}>
                             <li id="history-of-urantia" className={rowIcon}>📜 The History of Urantia</li>
                         </div>
-                        <div onClick={() => ContentLoader_ins.setJesusTeachings()} className={rowBase}>
+                        <div onClick={() => {
+                            ContentLoader_ins.setJesusTeachings()
+                            hidePanel()
+                        }
+                        } className={rowBase}>
                             <li id="life-and-teachings-of-jesus" className={rowIcon}>✝️ The Life and Teachings of Jesus</li>
                         </div>
-                        <div onClick={() => ContentLoader_ins.loadFavourites()} className={rowBase}>
+                        <div onClick={() => {
+                            ContentLoader_ins.loadFavourites()
+                            hidePanel()
+                        }} className={rowBase}>
                             <li id="favourite" className={rowIcon}>⭐ Favourite</li>
                         </div>
-                        <div onClick={() => ContentLoader_ins.loadBookmarks()} className={rowBase}>
+                        <div onClick={() => {
+                            ContentLoader_ins.loadBookmarks()
+                            hidePanel()
+                        }}
+                            className={rowBase}>
                             <li id="bookmark" className={rowIcon}>🔖 Bookmarks</li>
                         </div>
                         <div
-                            onClick={() => ContentLoader_ins.renderNotes()}
+                            onClick={() => {
+                                ContentLoader_ins.renderNotes()
+                                hidePanel()
+                            }}
                             className={rowBase}
                         >
                             <li id="notes" className={rowIcon}>📔 Notes</li>
