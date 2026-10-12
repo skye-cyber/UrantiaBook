@@ -3,6 +3,7 @@ import { ContentHelper } from './utils';
 import { reactPortalBridge } from '../../../../common/react-portal-bridge';
 import { modalmanager } from '../../../../common/Status/Manager';
 import { StateManager } from '../../../../common/syscore/StatesManager';
+import { ubook } from '../../../../common/ubook';
 
 /**
  * Create item and handle favouriting and bookmarking
@@ -72,7 +73,7 @@ export const BookItem = ({ part, paper, section, title, tag, struct }) => {
     const OpenSectionContent = useCallback(() => {
         document.dispatchEvent(new CustomEvent('clear-reader-section'))
         reactPortalBridge.showComponentInTarget('Readable', 'reader-content', { section: section }, 'readable_content')
-        ContentHelper.scrollToTop(StateManager.get('readerSection'))
+        ContentHelper.scrollToTop(StateManager.get('reader-wrapper-container'))
 
         document.dispatchEvent(new CustomEvent('hide-item-selector'))
         //document.dispatchEvent(new CustomEvent('hide-book-content-panel'))
@@ -86,7 +87,7 @@ export const BookItem = ({ part, paper, section, title, tag, struct }) => {
     const FavouriteItem = useCallback(async () => {
         const structure = ContentHelper.createStructure(section, paper, part);
 
-        const status = await window.ubook.favourites.toggle(structure);
+        const status = await ubook.favourites.toggle(structure);
         if (status.success) {
             //highLightFav(status.task);
             setfav(status.task === 'add')
@@ -103,7 +104,7 @@ export const BookItem = ({ part, paper, section, title, tag, struct }) => {
      */
     const BookmarkItem = useCallback(async () => {
         const structure = ContentHelper.createStructure(section, paper, part);
-        const status = await window.ubook.bookmarks.toggle(structure);
+        const status = await ubook.bookmarks.toggle(structure);
         if (status.success) {
             //highLightBookmark(status.task);
             setbookmarked(status.task === 'add')

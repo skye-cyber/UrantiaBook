@@ -334,7 +334,7 @@ def central_superuniverses():
         ]
     }
 
-    # --- Load your raw paragraphs JSON ---
+    # --- Load  raw paragraphs JSON ---
     with open('structured_urantia.json') as f:
         raw_data = json.load(f)
 
@@ -697,7 +697,7 @@ def local_universe():
         ]
     }
 
-    # --- Load your raw paragraphs JSON ---
+    # --- Load  raw paragraphs JSON ---
     with open('structured_urantia.json') as f:
         raw_data = json.load(f)
 
@@ -1447,7 +1447,7 @@ def history_urantia():
             ]
     }
 
-    # --- Load your raw paragraphs JSON ---
+    # --- Load  raw paragraphs JSON ---
     with open('structured_urantia.json') as f:
         raw_data = json.load(f)
 
@@ -2252,7 +2252,7 @@ def jesus_life_teachings():
             ]
     }
 
-    # --- Load your raw paragraphs JSON ---
+    # --- Load  raw paragraphs JSON ---
     with open('structured_urantia.json') as f:
         raw_data = json.load(f)
 

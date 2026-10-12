@@ -42,7 +42,7 @@ class ErrorBoundary extends React.Component {
 
     render() {
         if (this.state.hasError && this.state.showingError) {
-            return !this.state.isDev ? (
+            return this.state.isDev ? (
                 <div style={{
                     padding: '20px',
                     border: '1px solid #ff6b6b',
@@ -77,7 +77,7 @@ class ErrorBoundary extends React.Component {
                 </button>
                 </div>
             ) : (
-                modalmanager?.showMessage?.("An error occurred", "error") ||
+                modalmanager?.showMessage?.("Something went wrong", "error") ||
                 ""
             );
         }

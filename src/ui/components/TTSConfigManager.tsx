@@ -42,6 +42,7 @@ import {
     Save as SaveIcon,
     Terminal as TerminalIcon
 } from '@mui/icons-material';
+import { ubook } from '../../common/ubook';
 
 interface TTSConfigManagerProps {
     open: boolean;
@@ -81,7 +82,7 @@ export const TTSConfigManager: React.FC<TTSConfigManagerProps> = ({
     useEffect(() => {
         const validate = async () => {
             if (config.engine && config.command) {
-                const result = await window.ubook.TTSValidator.validateTTS(config, {
+                const result = await ubook.TTSValidator.validateTTS(config, {
                     checkExecutable: true,
                     checkHelpFlag: false,
                     timeout: 3000
@@ -98,7 +99,7 @@ export const TTSConfigManager: React.FC<TTSConfigManagerProps> = ({
         setTestResult(null);
 
         try {
-            const result = await window.ubook.TTSValidator.validateTTS(config, {
+            const result = await ubook.TTSValidator.validateTTS(config, {
                 checkExecutable: true,
                 checkHelpFlag: true,
                 timeout: 10000
@@ -130,7 +131,7 @@ export const TTSConfigManager: React.FC<TTSConfigManagerProps> = ({
     const handleSave = async () => {
         if (!validationResult?.isValid) {
             // Re-validate with full checks before saving
-            const fullValidation = await window.ubook.TTSValidator.validateTTS(config, {
+            const fullValidation = await ubook.TTSValidator.validateTTS(config, {
                 checkExecutable: true,
                 checkHelpFlag: true,
                 timeout: 5000
@@ -145,7 +146,7 @@ export const TTSConfigManager: React.FC<TTSConfigManagerProps> = ({
         setSaving(true);
         try {
             // Call ubook.configApi to save
-            await window.ubook.config.updateTTS(config)
+            await ubook.config.updateTTS(config)
             await onSave(config as TTSConfig);
             onClose();
         } catch (error: any) {

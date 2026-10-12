@@ -56,6 +56,7 @@ export const ReaderUI = ({ }) => {
 
     useEffect(() => {
         readerSection.current = StateManager.get('readerSection')
+        StateManager.set('reader-wrapper-container', wrapper.current)
     })
 
     return (

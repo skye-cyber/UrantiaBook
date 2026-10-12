@@ -10,6 +10,7 @@ import { Settings as SettingsIcon } from '@mui/icons-material';
 import { BaseSearchEntry } from './Search/search_entry';
 import { StateManager } from '../../common/syscore/StatesManager';
 import { modalmanager } from '../../common/Status/Manager';
+import { ubook } from '../../common/ubook';
 
 export const SettingsPage = () => {
     const [settings, setSettings] = useState(settingsManager.getAll());
@@ -23,7 +24,7 @@ export const SettingsPage = () => {
     const backdropRef = useRef(null);
 
     const fetchTTSConfig = async () => {
-        const config = await window.ubook.config.read()
+        const config = await ubook.config.read()
         // const ttsAvailable = cfg?.tts && Object.keys(cfg.tts).length > 0;
         if (config) {
             setTTSconfig(config.tts)
@@ -43,7 +44,7 @@ export const SettingsPage = () => {
     const handleSave = async (newConfig) => {
         // Save handled in the component via ubook.configApi
         //         console.log(newConfig)
-        // window.ubook.config.updateTTS(newConfig)
+        // ubook.config.updateTTS(newConfig)
     };
 
     // Event listeners for opening/closing

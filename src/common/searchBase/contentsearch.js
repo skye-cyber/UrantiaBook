@@ -2,6 +2,7 @@ import { StateManager } from "../syscore/StatesManager";
 import { reactPortalBridge } from "../react-portal-bridge";
 import { ContentHelper } from "../../ui/components/Reader/Book/utils";
 import { modalmanager } from "../Status/Manager";
+import { ubook } from "../ubook";
 
 export class ContentSearch {
     constructor(part = '_all_') {
@@ -187,7 +188,7 @@ export class ContentSearch {
     }
 
     async readSrcFile(src) {
-        return await window.ubook.content.read(src);
+        return await ubook.content.read(src);
     }
 
     getMappedSources(ids = []) {

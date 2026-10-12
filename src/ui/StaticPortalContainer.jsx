@@ -4,9 +4,9 @@ import { BookItem } from './components/Reader/Book/BookItem';
 import { Toast } from './components/StatusUI/ToastsUI';
 import { Readable, Textual } from './components/Reader/Book/ContentWrapper';
 import { ContentEmpty } from './components/Panels/BookContentPanel';
-import { NoteCard } from './components/Panels/Note';
+import { NoteCard } from './components/Notes/NoteCard';
 import { ConfirmationDialog } from './components/StatusUI/confirm';
-import { LoadingSpinner } from './components/StatusUI/StatusUI';
+import { DualRingGlassLoader } from './components/StatusUI/StatusUI';
 import { ResultCard } from './Pages/Search';
 
 const componentRegistry = {
@@ -17,7 +17,7 @@ const componentRegistry = {
     ContentEmpty,
     NoteCard,
     ConfirmationDialog,
-    LoadingSpinner,
+    DualRingGlassLoader,
     ResultCard
 };
 

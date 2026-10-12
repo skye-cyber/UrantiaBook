@@ -4,6 +4,7 @@ import { reactPortalBridge } from '../../../common/react-portal-bridge';
 import { StateManager } from '../../../common/syscore/StatesManager';
 import { waitForElement } from '../../../common/syscore/dom_utils';
 import { modalmanager } from '../../../common/Status/Manager';
+import { ubook } from '../../../common/ubook';
 
 export class ContentLoader {
     constructor() {
@@ -95,9 +96,9 @@ export class ContentLoader {
     async loader(type = 'favourites', silent = false) {
         let data
         if (type === 'favourites') {
-            data = await window.ubook.favourites.readAll()
+            data = await ubook.favourites.readAll()
         } else{
-            data = await window.ubook.bookmarks.readAll()
+            data = await ubook.bookmarks.readAll()
         }
         const items = data?.[type === 'favourites' ? 'fav' : 'bookmark'];
 
@@ -115,7 +116,7 @@ export class ContentLoader {
 
         const contentFile = 'FN-Combined_Structured_UB.json';
 
-        const fullData = await window.ubook.content.read(contentFile);
+        const fullData = await ubook.content.read(contentFile);
         const PartsDataById = Object.fromEntries(fullData.parts.map(part => [part.id, part]));
 
         // const reader = new BookReader(this.paper_container, this.reader_section)
@@ -167,7 +168,7 @@ export class ContentLoader {
      *
      */
     async renderNotes(silent = false) {
-        const notesData = await window.ubook.notes.readAll();
+        const notesData = await ubook.notes.readAll();
         const items = notesData?.notes;
 
         if (!Array.isArray(items) || items.length === 0) {

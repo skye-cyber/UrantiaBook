@@ -1,4 +1,5 @@
 import lunr from 'lunr';
+import { ubook } from '../ubook';
 
 export class LunrSearch {
     constructor() {
@@ -97,7 +98,7 @@ export class LunrSearch {
 
             // Process files sequentially to reduce memory pressure
             for (const file of sourceFiles) {
-                const data = await window.ubook.content.read(file)
+                const data = await ubook.content.read(file)
                 if (!data) continue;
 
                 const documents = this.flattenContent(data);

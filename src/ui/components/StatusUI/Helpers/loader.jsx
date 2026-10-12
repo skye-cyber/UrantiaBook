@@ -5,7 +5,7 @@ export class LoadingSpinner {
         //
     }
     async open(text) {
-        const portalId = reactPortalBridge.showComponentInTarget('LoadingSpinner', 'reader-content', { text: text }, 'loadingspinner')
+        const portalId = reactPortalBridge.showComponentInTarget('DualRingGlassLoader', 'reader-content', { text: text }, 'loadingspinner')
         return portalId
     }
     close() {

@@ -2,6 +2,8 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { appState } from '../../../State/appState';
 import { modalmanager } from '../../../../common/Status/Manager';
 import { StateManager } from '../../../../common/syscore/StatesManager';
+import { ubook } from '../../../../common/ubook';
+
 export const NotesComposer = () => {
     const noteModal = useRef(null);
     const noteBox = useRef(null);
@@ -50,7 +52,7 @@ export const NotesComposer = () => {
             content: appState.selectedHTML
         };
 
-        const status_ok = window.ubook.notes.save(note);
+        const status_ok = ubook.notes.save(note);
         if (status_ok) {
             modalmanager.showMessage('Note saved successfully', 'success');
         } else {
@@ -92,6 +94,14 @@ export const NotesComposer = () => {
             <div className="backdrop-brightness-50 absolute inset-0"></div>
             <div ref={noteBox} id="note-box" className="bg-white -translate-x-full dark:bg-gray-100 rounded-lg shadow-xl w-full max-w-md md:max-w-lg mx-4 z-10">
                 <div className="p-6">
+                    <h3 className="text-lg font-semibold text-gray-800 mb-4">Note Comment(#)</h3>
+                    <textarea
+                        ref={notComment}
+                        id="note-comment"
+                        onInput={onInputHandler}
+                        className="w-full h-32 p-3 border border-gray-300 rounded-lg focus:border-blue-500 resize-none"
+                        placeholder="Enter  comment here..."
+                    ></textarea>
                     <h3 className="text-lg font-semibold text-gray-800 mb-4">Note</h3>
                     <div
                         ref={noteContent}
@@ -101,14 +111,6 @@ export const NotesComposer = () => {
                         role="note-display"
                         dangerouslySetInnerHTML={{ __html: selectedHTML }}
                     ></div>
-                    <h3 className="text-lg font-semibold text-gray-800 mb-4">Note Comment(#)</h3>
-                    <textarea
-                        ref={notComment}
-                        id="note-comment"
-                        onInput={onInputHandler}
-                        className="w-full h-32 p-3 border border-gray-300 rounded-lg focus:border-blue-500 resize-none"
-                        placeholder="Enter your comment here..."
-                    ></textarea>
                     <div className="flex justify-end space-x-3 mt-4">
                         <button
                             className="px-4 py-2 text-gray-600 hover:text-gray-800"

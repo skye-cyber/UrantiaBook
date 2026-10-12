@@ -14,6 +14,7 @@ val tauriProperties = Properties().apply {
     }
 }
 
+// Set signing options: keystore
 val keystorePropertiesFile = rootProject.file("keystore.properties")
 val keystoreProperties = Properties()
 if (keystorePropertiesFile.exists()) {

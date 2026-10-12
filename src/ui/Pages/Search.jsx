@@ -4,6 +4,7 @@ import { loadingspinner } from '../components/StatusUI/Helpers/loader';
 import { waitForElement } from '../../common/syscore/dom_utils';
 import { ContentLoader_ins } from '../components/Panels/content_loader';
 import { BaseSearchEntry } from './Search/search_entry';
+import { PART_ID_MAP } from '../components/Reader/navigator';
 
 export const SearchResultPage = ({ }) => {
     const resultRef = useRef(null);
@@ -160,16 +161,7 @@ export const SearchResultPage = ({ }) => {
 }
 
 export const ResultCard = ({ result, highlightedContent, count, link_data }) => {
-    const part_id_map = {
-        0: 'Foreword',
-        1: 'SuperUniverse',
-        2: 'LocalUniverse',
-        3: 'HistoryOfUrantia',
-        4: 'JesusTeachings'
-    }
-
     const openSearchContent = useCallback(() => {
-        //console.log(`Find: ${link_data.part_id}-${link_data.paper_id}-${link_data.section_number}`)
         loadingspinner.open('Loading content, please wait...')
         let ready = false // For cloasing loader
 
@@ -177,9 +169,9 @@ export const ResultCard = ({ result, highlightedContent, count, link_data }) => 
          * STEP1: Prepare part content
          * true no items interface display
          */
-        ContentLoader_ins[`set${part_id_map[link_data.part_id]}`](true)
+        ContentLoader_ins[`set${PART_ID_MAP[link_data.part_id]}`](true)
 
-        // closeResult page
+        // STEP2: closeResult page
         StateManager.get('hideSearchResult')()
 
 

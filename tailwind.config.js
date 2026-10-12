@@ -11,7 +11,7 @@ module.exports = {
             md: '768px',
             sd: '896px',
             lg: '1024px',
-            '2lg':'1152px',
+            '2lg': '1152px',
             xl: '1280px',
             '2xl': '1536px',
         },
@@ -50,7 +50,7 @@ module.exports = {
                 'soft-md': '0 4px 16px rgba(0, 0, 0, 0.08)',
                 'soft-lg': '0 8px 32px rgba(0, 0, 0, 0.1)',
 
-                // For your message component specifically
+                // For  message component specifically
                 'message': '0 2px 8px rgba(0, 0, 0, 0.1)',
                 'message-hover': '0 4px 16px rgba(0, 0, 0, 0.12)',
             },
@@ -133,6 +133,33 @@ module.exports = {
         },
 
         keyframes: {
+            "fade-in": {
+                "0%": { opacity: "0" },
+                "100%": { opacity: "1" },
+            },
+            "enter": {
+                "0%": { opacity: "0", transform: "scale(0.94) translateY(8px)" },
+                "100%": { opacity: "1", transform: "scale(1) translateY(0)" },
+            },
+            "orb-rotate": {
+                to: { transform: "rotate(360deg)" },
+            },
+            "orb-glow": {
+                "0%,100%": { opacity: "0.6", transform: "translateX(-50%) scale(1)" },
+                "50%": { opacity: "1", transform: "translateX(-50%) scale(1.1)" },
+            },
+            "apple-arc": {
+                "0%": { strokeDashoffset: "var(--circ)", transform: "rotate(0deg)" },
+                "50%": { strokeDashoffset: "calc(var(--circ) * 0.25)", transform: "rotate(0deg)" },
+                "100%": { strokeDashoffset: "var(--circ)", transform: "rotate(360deg)" },
+            },
+            animation: {
+                "fade-in": "fade-in 0.3s cubic-bezier(0.16,1,0.3,1) forwards",
+                "enter": "enter 0.5s cubic-bezier(0.16,1,0.3,1) forwards",
+                "orb-rotate": "orb-rotate 2.4s linear infinite",
+                "orb-glow": "orb-glow 3s ease-in-out infinite",
+                "apple-arc": "apple-arc 1.6s cubic-bezier(0.76,0,0.24,1) infinite",
+            },
             modalIn: {
                 '0%': { transform: 'translateY(20px) scale(0.95)', opacity: '0' },
                 '100%': { transform: 'translateY(0) scale(1)', opacity: '1' },

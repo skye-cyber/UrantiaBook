@@ -1,6 +1,7 @@
 import { ContentHelper } from "./utils";
 import { StateManager } from "../../../../common/syscore/StatesManager";
 import { reactPortalBridge } from "../../../../common/react-portal-bridge";
+import { ubook } from "../../../../common/ubook";
 
 /**
  * Reader is responsible for rendering paper sections into a container,
@@ -17,7 +18,7 @@ export class BookReader {
         this.paperContainer = container;
         StateManager.subscribe('readerSection', (el) => this.readerSection = el)
         if (this.readerSection && readerSection) this.readerSection = readerSection;
-        this.api = window.ubook;
+        this.api = ubook;
     }
 
     /**
