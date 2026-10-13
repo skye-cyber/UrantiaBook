@@ -491,7 +491,7 @@ pub fn run() {
                             // Give the frontend time to boot; the frontend
                             // can also emit `app-ready` and we can listen for it.
                             // Simplest: close splash after short delay once main shows.
-                            std::thread::sleep(std::time::Duration::from_millis(1500));
+                            std::thread::sleep(std::time::Duration::from_millis(500));
                             let _ = splash_clone.close();
                         });
                     }
