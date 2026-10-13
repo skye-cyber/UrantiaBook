@@ -171,7 +171,7 @@ export class BookReader {
         });
 
         hideSelectorModal();
-        setTimeout(() => scrollToTop(readerWrapper), 100);
+        //         setTimeout(() => scrollToTop(readerWrapper), 100);
     }
 }
 
