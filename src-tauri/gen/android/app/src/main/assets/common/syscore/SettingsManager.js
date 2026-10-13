@@ -3,6 +3,7 @@ import { StateManager } from "./StatesManager";
 import { appSettings, updateAppSettings, updateAppState } from "../../ui/State/appState";
 import { ChangeFontName as ChangeReaderFontName } from "../../ui/components/Reader/font_manager";
 import { textmanager } from "../../ui/components/Reader/TextManager";
+import { ubook } from "../ubook";
 
 class SettingsManager {
     constructor() {
@@ -11,11 +12,11 @@ class SettingsManager {
         this.subscribe(updateAppState)
     }
 
-    // Load from disk (using  existing fs API)
+    // Load from disk (using existing fs API)
     async loadSettings() {
         try {
-            const saved = await window.ubook.fs.read(
-                window.ubook.fs.join(window.ubook.fs.homedir(), '.UBook', 'config', 'user-settings.json')
+            const saved = await ubook.fs.read(
+                ubook.fs.join(ubook.fs.homedir(), '.UBook', 'config', 'user-settings.json')
             );
             if (saved) {
                 updateAppSettings(this.mergeSettings(saved, appSettings));
@@ -30,8 +31,8 @@ class SettingsManager {
     // Save to disk
     async saveSettings() {
         try {
-            await window.ubook.fs.write(
-                window.ubook.fs.join(window.ubook.fs.homedir(), '.UBook', 'config', 'user-settings.json'),
+            await ubook.fs.write(
+                ubook.fs.join(ubook.fs.homedir(), '.UBook', 'config', 'user-settings.json'),
                 JSON.stringify(appSettings, null, 2)
             );
             updateAppState(appSettings)
