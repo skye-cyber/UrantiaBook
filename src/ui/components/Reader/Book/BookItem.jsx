@@ -31,45 +31,6 @@ export const BookItem = ({ part, paper, section, title, tag, struct }) => {
         setup()
     }, [isfav, isbookmarked])
 
-    const highLightFav = useCallback((op) => {
-        try {
-            if (!favsvg.current || !favsvg.current.classList) return;
-
-            if (!op) return ['fill-white', 'dark:fill-pink-200', 'fill-pink-600'].forEach(cls => favsvg.current.classList.toggle(cls));
-
-            // Add bookmark
-            if (op === 'add') {
-                favsvg.current.classList.add('fill-pink-600');
-                favsvg.current.classList.remove('fill-white', 'dark:fill-pink-200');
-                //remove bookmark
-            } else if (op === 'remove') {
-                favsvg.current.classList.add('fill-white', 'dark:fill-pink-200');
-                favsvg.current.classList.remove('fill-pink-600');
-            }
-        } catch (err) {
-            console.error('Error in highLightFav:', err);
-        }
-    })
-
-    const highLightBookmark = useCallback((op) => {
-        try {
-            if (!bookmarksvg.current || !bookmarksvg.current.classList) return;
-            if (!op) return ['fill-none', 'fill-blue-600'].forEach(cls => bookmarksvg.current.classList.toggle(cls));
-
-            // Add bookmark
-            if (op === 'add') {
-                bookmarksvg.current.classList.remove('fill-none');
-                bookmarksvg.current.classList.add('fill-blue-600');
-                //remove bookmark
-            } else if (op === 'remove') {
-                bookmarksvg.current.classList.add('fill-none');
-                bookmarksvg.current.classList.remove('fill-blue-600');
-            }
-        } catch (err) {
-            console.error('Error in highLightBookmark:', err);
-        }
-    })
-
     const OpenSectionContent = useCallback(() => {
         document.dispatchEvent(new CustomEvent('clear-reader-section'))
         reactPortalBridge.showComponentInTarget('Readable', 'reader-content', { section: section }, 'readable_content')
