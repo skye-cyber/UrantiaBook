@@ -4,6 +4,7 @@ import { appState } from '../../State/appState';
 import { Highlighter } from '../Reader/hightlight';
 import { StateManager } from '../../../common/syscore/StatesManager';
 import { useMediaQuery } from '@mui/material';
+import { hightlightsearch } from '../Reader/Search/hightlightSearch';
 
 export const OnselectTooltip = ({ }) => {
     const tooltip = useRef(null);
@@ -102,7 +103,7 @@ export const OnselectTooltip = ({ }) => {
                     </svg>Copy</p></button>
 
                     <button onClick={() => menuaction.search()} className="flex hover:text-green-300 dark:hover:text-green-600">
-                        <svg className="h-5 w-5 fill-indigo-400 dark:fill-blue-600 text-white dark:text-slate-200" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><path d="M480 272C480 317.9 465.1 360.3 440 394.7L566.6 521.4C579.1 533.9 579.1 554.2 566.6 566.7C554.1 579.2 533.8 579.2 521.3 566.7L394.7 440C360.3 465.1 317.9 480 272 480C157.1 480 64 386.9 64 272C64 157.1 157.1 64 272 64C386.9 64 480 157.1 480 272zM272 416C351.5 416 416 351.5 416 272C416 192.5 351.5 128 272 128C192.5 128 128 192.5 128 272C128 351.5 192.5 416 272 416z" /></svg>Search
+                        <svg className={`${useMediaQuery('(max-width: 400px)') ? 'hidden' : ''} h-5 w-5 fill-indigo-400 dark:fill-blue-600 text-white dark:text-slate-200`} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><path d="M480 272C480 317.9 465.1 360.3 440 394.7L566.6 521.4C579.1 533.9 579.1 554.2 566.6 566.7C554.1 579.2 533.8 579.2 521.3 566.7L394.7 440C360.3 465.1 317.9 480 272 480C157.1 480 64 386.9 64 272C64 157.1 157.1 64 272 64C386.9 64 480 157.1 480 272zM272 416C351.5 416 416 351.5 416 272C416 192.5 351.5 128 272 128C192.5 128 128 192.5 128 272C128 351.5 192.5 416 272 416z" /></svg>Search
                     </button>
 
                     <button onClick={ComposeNote} className="hover:text-yellow-300 dark:hover:text-yellow-600">Save Note</button>
@@ -118,7 +119,14 @@ export const OnselectTooltip = ({ }) => {
                             true
                         )}
                         onClick={() => Highlighter.hightlight()}
-                        className={` ${useMediaQuery('(max-width: 400px)') ? 'pointer-events-none text-gray-500' : ''} flex hover:text-yellow-400 dark:hover:text-yellow-600`}>🖊️Highlight</button>
+                        className={` ${useMediaQuery('(max-width: 400px)') ? 'hidden pointer-events-none text-gray-500' : ''} flex hover:text-yellow-400 dark:hover:text-yellow-600`}>🖊️Highlight</button>
+                    <button
+                        disabled={useMediaQuery('(min-width: 400px)') && (
+                            true
+                        )}
+                        aria-label='Find in page'
+                        onClick={() => hightlightsearch.searchPage()}
+                        className={` ${useMediaQuery('(min-width: 400px)') ? 'pointer-events-none text-gray-500' : ''} flex hover:text-yellow-400 dark:hover:text-yellow-600`}>🖊️Find</button>
                     <button onClick={() => StateManager.get('ReadInnitializer')()} className="hover:text-pink-400 dark:hover:text-pink-600">
                         🔊 Read
                     </button>
@@ -128,6 +136,6 @@ export const OnselectTooltip = ({ }) => {
                 </div>
             </div>
             {/*<ColorPicker />*/}
-        </section>
+        </section >
     )
 }
