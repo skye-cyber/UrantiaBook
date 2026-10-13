@@ -26,7 +26,7 @@ const App = () => {
         <ErrorBoundary>
             <MainLayout>
                 <Header />
-                <div className='w-full h-[100vh] flex'>
+                <div className='w-full h-[100dvh] flex'>
                     <ErrorBoundary>
                         <BookContentPanel isOpen={isSidebarOpen} onToggle={toggleSidebar} />
                         <ReaderUI />
