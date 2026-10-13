@@ -181,7 +181,7 @@ export const BookContentPanel = ({ }) => {
             <div
                 ref={panel}
                 id="sidepane"
-                className="fixed z-40 left-0 w-[300px] sm:w-[290px] bg-gradient-to-br from-indigo-900 via-indigo-950 to-indigo-950 dark:from-[#001f2b] dark:via-[#001f2b] dark:to-[#002733] h-[90dvh] sm:h-[93vh] shadow-[0_10px_40px_-10px_rgba(0,0,0,0.6)] dark:shadow-[0_10px_40px_-10px_rgba(0,0,0,0.8)] transform transition-transform duration-300 ease-out -translate-x-full xl:translate-x-0 select-none rounded-r-2xl overflow-hidden"
+                className="fixed z-40 left-0 w-[300px] sm:w-[300px] bg-gradient-to-br from-indigo-900 via-indigo-950 to-indigo-950 dark:from-[#001f2b] dark:via-[#001f2b] dark:to-[#002733] h-[90dvh] sm:h-[93vh] shadow-[0_10px_40px_-10px_rgba(0,0,0,0.6)] dark:shadow-[0_10px_40px_-10px_rgba(0,0,0,0.8)] transform transition-transform duration-300 ease-out -translate-x-full xl:translate-x-0 select-none rounded-r-2xl overflow-hidden"
             >
                 {/* Header */}
                 <div className="flex items-center justify-between px-4 py-3 border-b border-indigo-700/70 dark:border-[#00455e]">

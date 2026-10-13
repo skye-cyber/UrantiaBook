@@ -36,7 +36,7 @@ const App = () => {
                 {/* status display modals */}
                 <div data-portal-container='messageContainer'
                     id='message-container'
-                    className='fixed top-5 right-5 z-[50] min-w-sm w-fit max-w-lg transform transition-all duration-700 ease-in-out'>
+                    className='fixed top-5 right-0 z-[50] w-72 transform transition-all duration-700 ease-in-out'>
                 </div>
                 {/* confirm dialog */}
                 <div data-portal-container='confirm-dialog-container' id='confirm-dialog-container'></div>
