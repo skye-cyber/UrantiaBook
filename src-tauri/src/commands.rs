@@ -32,12 +32,98 @@ pub fn config_init(app: AppHandle) -> Result<Value, String> {
                 "outputFormat": "wav",
                 "maxTextLength": 1000
             },
-            "appearance": { "theme": "system", "fontSize": 14 },
             "paths": {
                 "notes": paths::notes_dir(&app).to_string_lossy(),
                 "favourites": paths::favourites_dir(&app).to_string_lossy(),
                 "bookmark": paths::bookmark_dir(&app).to_string_lossy(),
                 "cache": paths::cache_dir(&app).to_string_lossy()
+            },
+            "appearance": {
+                "theme": "dark",
+                "fontSize": 14,
+                "fontFamily": "sans",
+                "focusMode": false,
+                "reducedMotion": false
+            },
+            "search": {
+                "defaultMode": "text",
+                "defaultParts": [
+                    1,
+                    2,
+                    3,
+                    4,
+                    5
+                ],
+                "caseSensitive": false,
+                "wholeWords": true,
+                "historySize": 50,
+                "saveHistory": false
+            },
+            "reader": {
+                "fontSize": 16,
+                "fontName": "normal",
+                "fontFamily": "default",
+                "lineHeight": 1.6,
+                "maxWidth": 400,
+                "justifyText": false,
+                "autoScrollSpeed": 0,
+                "Fonts": [
+                    {
+                        "label": "Default",
+                        "value": "normal"
+                    },
+                    {
+                        "label": "Handwriting",
+                        "value": "handwriting"
+                    },
+                    {
+                        "label": "Mono",
+                        "value": "mono"
+                    },
+                    {
+                        "label": "Brand",
+                        "value": "brand"
+                    },
+                    {
+                        "label": "Elegant",
+                        "value": "elegant"
+                    }
+                ],
+                "Themes": [
+                    {
+                        "label": "Sepia",
+                        "value": "sepia"
+                    },
+                    {
+                        "label": "Light",
+                        "value": "light"
+                    },
+                    {
+                        "label": "Dark",
+                        "value": "dark"
+                    },
+                    {
+                        "label": "Night",
+                        "value": "night"
+                    }
+                ]
+            },
+            "audio": {
+                "voice": "picowave",
+                "speed": 0.86,
+                "pitch": 1,
+                "autoPlay": true
+            },
+            "privacy": {
+                "analytics": false,
+                "crashReports": false,
+                "autoSaveNotes": false
+            },
+            "shortcuts": {
+                "toggleSearch": "Ctrl+K",
+                "toggleSettings": "Ctrl+,",
+                "toggleReader": "Ctrl+R",
+                "toggleDarkMode": "Ctrl+D"
             }
         });
         fs::write(

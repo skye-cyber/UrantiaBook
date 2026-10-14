@@ -5,6 +5,7 @@ import { waitForElement } from '../../common/syscore/dom_utils';
 import { ContentLoader_ins } from '../components/Panels/content_loader';
 import { BaseSearchEntry } from './Search/search_entry';
 import { PART_ID_MAP } from '../components/Reader/navigator';
+import { reactPortalBridge } from '../../common/react-portal-bridge';
 
 export const SearchResultPage = ({ }) => {
     const resultRef = useRef(null);
@@ -162,8 +163,7 @@ export const SearchResultPage = ({ }) => {
 
 export const ResultCard = ({ result, highlightedContent, count, link_data }) => {
     const openSearchContent = useCallback(() => {
-        loadingspinner.open('Loading content, please wait...')
-        let ready = false // For cloasing loader
+        const loaderPID = loadingspinner.open('Loading content, please wait...')
 
         /*
          * STEP1: Prepare part content
@@ -178,12 +178,8 @@ export const ResultCard = ({ result, highlightedContent, count, link_data }) => 
         //STEP3: find and click right section
         waitForElement(`[data-tag="${link_data.part_id}-${link_data.paper_id}-${link_data.section_number}"]`, (e) => {
             e.click()
-            ready = true
+            reactPortalBridge.closeComponent(loaderPID)
         })
-        // Given the page time to animate out
-        setTimeout(() => {
-            if (ready) loadingspinner.close();
-        }, 300)
     })
 
     return (

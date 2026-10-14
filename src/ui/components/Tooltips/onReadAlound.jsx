@@ -51,19 +51,24 @@ export const PlayerTooltip = ({ }) => {
 
             StateManager.get('showTTSLoader')()
 
-            const audio_file = await ubook.tts.generate(text)
-            if (audio_file) {
-                StateManager.get('hideTTSLoader')();
+            let audio_file = null;
+            // Give loader time to show
+            setTimeout(async () => {
+                audio_file = await ubook.tts.generate(text)
 
-                //start playing
-                await ubook.player.play(audio_file)
+                if (audio_file) {
+                    StateManager.get('hideTTSLoader')();
 
-                displayPlayerTool();
-                SetIsPlaying(true);
-            }
+                    //start playing
+                    await ubook.player.play(audio_file)
+
+                    displayPlayerTool();
+                    SetIsPlaying(true);
+                }
+            }, 500)
+
         } catch (err) {
             console.log(err || err.title || err.name || err.slice(0, 100))
-        } finally {
             StateManager.get('hideTTSLoader')()
         }
     })

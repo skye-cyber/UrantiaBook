@@ -7,6 +7,7 @@ import type {
     TTSConfig,
     AppConfig,
     ToggleResult,
+    userSettings,
 } from './types';
 import { TTSValidator } from './utils/ttsValidation';
 import { playerApi } from './player';
@@ -153,14 +154,6 @@ export const systemApi = {
 // Same as Electron — Web Audio already works identically in the Tauri webview.
 export { playerApi } from './player';
 
-// ==================== SETTINGS ====================
-// The original delegated to nonexistent IPC handlers in main.ts. Now we reuse
-// configApi directly (config.json is the settings store).
-export const settingsApi = {
-    get: () => configApi.read(),
-    save: (settings: AppConfig) => configApi.update(settings),
-    reset: () => configApi.reset(),
-};
 
 // ==================== THEME ====================
 export const themeApi = {
@@ -186,9 +179,11 @@ export const themeApi = {
 
 // Re-export everything under one namespace so React code can do:
 //   import { ubook } from '@common/ubook';
-//   ubook.config.read()  ...
+//   ubook.config.read()  ... or
+// ubook.settings.read()
 export const ubook = {
     config: configApi,
+    settings: configApi, // alias
     tts: ttsApi,
     TTSValidator,
     fs: fsApi,
@@ -198,7 +193,6 @@ export const ubook = {
     content: contentApi,
     system: systemApi,
     player: playerApi,
-    settings: settingsApi,
     theme: themeApi,
 };
 

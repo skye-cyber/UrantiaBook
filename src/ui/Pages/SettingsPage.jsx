@@ -11,6 +11,7 @@ import { BaseSearchEntry } from './Search/search_entry';
 import { StateManager } from '../../common/syscore/StatesManager';
 import { modalmanager } from '../../common/Status/Manager';
 import { ubook } from '../../common/ubook';
+import { reactPortalBridge } from '../../common/react-portal-bridge';
 
 export const SettingsPage = () => {
     const [settings, setSettings] = useState(settingsManager.getAll());
@@ -112,12 +113,12 @@ export const SettingsPage = () => {
     // Reset to defaults
     const resetToDefaults = async () => {
         if (confirm('Reset all settings to default values?')) {
-            await loadingspinner.open('Resetting settings...');
+            const loaderPID = await loadingspinner.open('Resetting settings...');
             try {
                 await settingsManager.resetToDefaults();
                 setIsDirty(false);
             } finally {
-                loadingspinner.close();
+                reactPortalBridge.closeComponent(loaderPID)
             }
         }
     };
@@ -166,7 +167,7 @@ export const SettingsPage = () => {
         // clear previous search result
         StateManager.get('clearSearchResult')();
 
-        await loadingspinner.open('Searching, please wait ...');
+        const loaderPID = loadingspinner.open('Searching, please wait ...');
 
         setTimeout(async () => {
             const searchInput = StateManager.get('searchInput');
@@ -197,11 +198,11 @@ export const SettingsPage = () => {
 
             } finally {
                 try {
-                    loadingspinner.close();
+                    reactPortalBridge.closeComponent(loaderPID)
                     if (result && isTextSearch) {
                         StateManager.get('showSearchResult')();
                     }
-                } catch (err) { }
+                } catch (err) { console.log("E", err) }
             }
         }, 200);
     }, []);
@@ -230,7 +231,7 @@ export const SettingsPage = () => {
             {/* Settings Panel */}
             <div
                 ref={containerRef}
-                className="fixed inset-1 left-1/2 -translate-x-1/2 top-1/7 bottom-auto right-auto m-auto sm:w-[90vw] max-w-full md:max-w-4xl h-full max-h-[95dvh] bg-white dark:bg-slate-800 rounded-sm sm:rounded-2xl shadow-2xl overflow-hidden hidden translate-y-[100vh] transition-all duration-300 z-[60]"
+                className="fixed inset-1 left-1/2 -translate-x-1/2 top-0 bottom-auto right-auto m-auto sm:w-[90vw] max-w-full md:max-w-4xl h-[100dvh] bg-white dark:bg-slate-800 rounded-sm sm:rounded-2xl shadow-2xl overflow-hidden hidden translate-y-[100vh] transition-all duration-300 z-[60]"
             >
                 {/* Header */}
                 <div className="bg-gradient-to-r from-primary-600 to-primary-800 p-6 relative">
@@ -512,7 +513,7 @@ export const SettingsPage = () => {
                                         onClick={() => setConfigDialogOpen(true)}
                                         variant="outlined"
                                         startIcon={<SettingsIcon />}
-                                        className='dark:bg-blue-300 dark:hover:bg-blue-400'
+                                        className='dark:bg-blue-300 dark:hover:bg-blue-400 border-2 border-primary-400'
                                         sx={{
                                             borderRadius: '10px',
                                             textTransform: 'none',
@@ -520,11 +521,8 @@ export const SettingsPage = () => {
                                             py: 1,
                                             fontWeight: 500,
                                             transition: 'all 0.2s ease',
-                                            borderColor: 'divider',
-                                            color: 'text.primary',
                                             '&:hover': {
                                                 transform: 'translateY(-1px)',
-                                                borderColor: 'primary.main',
                                                 backgroundColor: 'action.hover',
                                             },
                                         }}
@@ -537,7 +535,6 @@ export const SettingsPage = () => {
                                         onClose={() => setConfigDialogOpen(false)}
                                         //                                         initialConfig={currentConfig?.tts || undefined}
                                         onSave={handleSave}
-                                        ubookConfigApi={ubook.configApi}
                                     />
                                 </div>
                             </div>

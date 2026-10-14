@@ -126,7 +126,7 @@ fn wire_main_window<R: Runtime>(app: &AppHandle<R>) {
 /// Resolves the on-disk path to the current app icon. Cross-platform because
 /// it only touches the filesystem — no tray/window APIs.
 fn resolve_icon_path<R: Runtime>(app: &AppHandle<R>, _dark: bool) -> PathBuf {
-    let filename = "ubook-rounded.png";
+    let filename = "ubook.png";
 
     if cfg!(debug_assertions) {
         std::env::current_dir()

@@ -232,7 +232,6 @@ export const Header = ({ }) => {
                         ref={searchInput}
                         id="searchInput"
                         type="text"
-                        autoFocus
                         placeholder="Search..."
                         className="w-full pl-10 pr-12 py-3 bg-indigo-950/40 dark:bg-[#004351] rounded-xl text-white placeholder-gray-100/90 dark:placeholder-primary-100 dark:text-gray-50 focus:outline-none focus:ring-2 focus:ring-primary-400 border border-indigo-950 dark:border-[#00d4ff] transition-all duration-300 selection:bg-[#55ffff]/20"
                     />
@@ -250,7 +249,9 @@ export const Header = ({ }) => {
 
                     {/* Submit Search Button */}
                     <button
-                        onClick={() => StateManager.get('applysearch')()}
+                        onClick={() => {
+                            StateManager.get('applysearch')();
+                        }}
                         id="submit-search"
                         title="submit-search"
                         aria-label="submit-search"

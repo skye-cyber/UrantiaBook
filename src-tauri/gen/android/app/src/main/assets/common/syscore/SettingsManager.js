@@ -15,9 +15,7 @@ class SettingsManager {
     // Load from disk (using existing fs API)
     async loadSettings() {
         try {
-            const saved = await ubook.fs.read(
-                ubook.fs.join(ubook.fs.homedir(), '.UBook', 'config', 'user-settings.json')
-            );
+            const saved = await ubook.config.read()
             if (saved) {
                 updateAppSettings(this.mergeSettings(saved, appSettings));
                 updateAppState(saved)
@@ -31,10 +29,7 @@ class SettingsManager {
     // Save to disk
     async saveSettings() {
         try {
-            await ubook.fs.write(
-                ubook.fs.join(ubook.fs.homedir(), '.UBook', 'config', 'user-settings.json'),
-                JSON.stringify(appSettings, null, 2)
-            );
+            await ubook.config.update(appSettings)
             updateAppState(appSettings)
         } catch (e) {
             console.error('Failed to save settings:', e);

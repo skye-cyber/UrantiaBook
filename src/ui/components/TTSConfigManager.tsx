@@ -24,7 +24,6 @@ import {
     //     Tooltip,
     Collapse,
     useMediaQuery,
-    Breakpoint,
     //     Paper
 } from '@mui/material';
 import TextFieldsIcon from '@mui/icons-material/TextFields';
@@ -49,7 +48,6 @@ interface TTSConfigManagerProps {
     onClose: () => void;
     initialConfig?: Partial<TTSConfig>;
     onSave: (config: TTSConfig) => Promise<void>;
-    ubookConfigApi: any;
 }
 
 export const TTSConfigManager: React.FC<TTSConfigManagerProps> = ({
@@ -57,7 +55,6 @@ export const TTSConfigManager: React.FC<TTSConfigManagerProps> = ({
     onClose,
     //     initialConfig,
     onSave,
-    ubookConfigApi
 }) => {
     const [config, setConfig] = useState<Partial<TTSConfig>>({
         inputType: 'text',
@@ -77,6 +74,14 @@ export const TTSConfigManager: React.FC<TTSConfigManagerProps> = ({
         { placeholder: 'output', description: 'Output file path' }
     ];
 
+    useEffect(() => {
+        const loadConfig = async () => {
+            const ttsconfig = await ubook.config.read()
+            if(ttsconfig) setConfig(ttsconfig.tts)
+            return ttsconfig
+        }
+        loadConfig()
+    })
 
     // Validate on config change
     useEffect(() => {
@@ -88,7 +93,6 @@ export const TTSConfigManager: React.FC<TTSConfigManagerProps> = ({
                     timeout: 3000
                 });
                 setValidationResult(result);
-                console.log(config)
             }
         };
         validate();
@@ -102,7 +106,7 @@ export const TTSConfigManager: React.FC<TTSConfigManagerProps> = ({
             const result = await ubook.TTSValidator.validateTTS(config, {
                 checkExecutable: true,
                 checkHelpFlag: true,
-                timeout: 10000
+                timeout: 100_000
             });
 
             if (result.isValid) {
@@ -271,7 +275,7 @@ export const TTSConfigManager: React.FC<TTSConfigManagerProps> = ({
                                 }}
                                 helperText={
                                     <Typography
-                                        component="p"
+                                        component="span"
                                         variant="caption"
                                         sx={{
                                             display: 'flex',
@@ -334,9 +338,8 @@ export const TTSConfigManager: React.FC<TTSConfigManagerProps> = ({
                             <FormControl fullWidth required>
                                 <InputLabel>Input Type</InputLabel>
                                 <Select
-                                    value={config.inputType}
+                                    defaultValue={config.inputType}
                                     label="Input Type"
-                                    defaultValue='text'
                                     onChange={(e) => setConfig({ ...config, inputType: e.target.value as 'text' | 'file' })}
                                     sx={{ borderRadius: '12px' }}
                                 >
@@ -362,8 +365,7 @@ export const TTSConfigManager: React.FC<TTSConfigManagerProps> = ({
 
                             <TextField
                                 label="Output Format"
-                                value={config.outputFormat || 'wav'}
-                                defaultValue="wav"
+                                defaultValue={config.outputFormat || 'wav'}
                                 onChange={(e) => setConfig({ ...config, outputFormat: e.target.value })}
                                 helperText="File extension or format (e.g., 'wav', 'mp3', 'ogg')"
                                 fullWidth
@@ -555,9 +557,9 @@ export const TTSConfigManager: React.FC<TTSConfigManagerProps> = ({
                                     <span>Example: </span>
                                     <code>
                                         {config.command
-                                            .replace('file', '/path/to/file.txt')
-                                            .replace('text', 'Hello World')
-                                            .replace('output', '/path/to/output.wav')}
+                                            .replace('\'{file}\'', '/path/to/file.txt')
+                                            .replace('\'{text}\'', 'Hello World')
+                                            .replace('\'{output}\'', '/path/to/output.wav')}
                                     </code>
                                 </Box>
                             </Box>
@@ -592,7 +594,7 @@ export const TTSConfigManager: React.FC<TTSConfigManagerProps> = ({
                     {useMediaQuery('(max-width: 400px)') ? (
                         "Test"
                     ) :
-                    "Test Command"
+                        "Test Command"
                     }
                 </Button>
                 <Button

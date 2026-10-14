@@ -1,4 +1,26 @@
 export let appSettings = {
+    tts: {
+        defaultEngine: {
+            name: "",
+            engine: "",
+            command: "",
+            inputType: "text",
+            outputFormat: "wav",
+            maxTextLength: 1000
+        },
+        engine: "",
+        command: "",
+        fallbackCommand: "",
+        inputType: "text",
+        outputFormat: "wav",
+        maxTextLength: 1000
+    },
+    paths: {
+        notes: "",
+        favourites: "",
+        bookmark: "",
+        cache: ""
+    },
     appearance: {
         theme: 'system',
         fontSize: 14,
