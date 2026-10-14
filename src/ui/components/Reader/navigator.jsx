@@ -2,6 +2,7 @@ import { reactPortalBridge } from "../../../common/react-portal-bridge";
 import { modalmanager } from "../../../common/Status/Manager";
 import { waitForElement } from "../../../common/syscore/dom_utils";
 import { StateManager } from "../../../common/syscore/StatesManager";
+import { globalEventBus } from "../../../Globals/eventBus";
 import { ContentLoader_ins } from "../Panels/content_loader";
 import { loadingspinner } from "../StatusUI/Helpers/loader";
 
@@ -60,7 +61,7 @@ export class BookNavigator {
             ContentLoader_ins[`set${PART_ID_MAP[REF_CONTENT.part_id]}`](true)
 
             //STEP2: close Notes page
-            StateManager.get('closeNotes')()
+            globalEventBus.emit('pages::notes:close')
 
             //STEP3: find and click right section
             waitForElement(`[data-tag="${REF_CONTENT.part_id}-${REF_CONTENT.paper_id}-${REF_CONTENT.section_number}"]`, (e) => {

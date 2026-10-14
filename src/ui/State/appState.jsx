@@ -25,7 +25,7 @@ export let appSettings = {
         theme: 'system',
         fontSize: 14,
         fontFamily: 'sans',
-        focusMode: false,
+        isuiFocusOn: false,
         reducedMotion: false
     },
     search: {

@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef } from 'react';
 import { StateManager } from '../../../common/syscore/StatesManager';
+import { globalEventBus } from '../../../Globals/eventBus';
 
 export const BookItemSelectorUI = ({ }) => {
     const itemSelector = useRef(null)
@@ -56,22 +57,23 @@ export const BookItemSelectorUI = ({ }) => {
     }, []);
 
     useEffect(() => {
+        const onEscape = (e) => {
+            if (itemSelector.current.classList.contains('hidden')) return
+            e.preventDefault()
+            hideSelectorModal()
+        }
         StateManager.set('paperContainer', paperContainer.current)
         StateManager.set('selectorTitle', selectorTitle.current)
         StateManager.set('filterContentInput', filterContentInputRef.current)
 
-        document.addEventListener('show-item-selector', displaySelectorModal)
-        document.addEventListener('hide-item-selector', hideSelectorModal)
-        document.addEventListener('escape-key-down', (e) => {
-            if (itemSelector.current.classList.contains('hidden')) return
-            e.preventDefault()
-            hideSelectorModal()
-        })
+        globalEventBus.on('ui:selctor:show', displaySelectorModal)
+        globalEventBus.on('ui:selector:hide', hideSelectorModal)
+        globalEventBus.on('keydown:escape', (e) => onEscape(e))
 
         return () => {
-            document.removeEventListener('show-item-selector', displaySelectorModal)
-            document.removeEventListener('hide-item-selector', hideSelectorModal)
-            document.addEventListener('escape-key-down', hideSelectorModal)
+            globalEventBus.off('ui:selector:hide', hideSelectorModal)
+            globalEventBus.off('ui:selctor:show', displaySelectorModal)
+            globalEventBus.off('keydown:escape', (e) => onEscape(e))
         }
     })
 
@@ -85,7 +87,7 @@ export const BookItemSelectorUI = ({ }) => {
             }}
             id="itemsSelector"
             className="fixed flex inset-0 z-[50] items-center justify-center backdrop-brightness-50 animate-exit hidden transform transition-all duration-50">
-            <div ref={itemSelectorBox} id="itemsSelectorBox" className="relative w-full max-w-xl mt-0 sm:mt-[7vh] h-full max-h-[90dvh] overflow-y-hidden rounded-sm sm:rounded-2xl bg-white dark:bg-zinc-950 shadow-none transform transition-all duration-300 ease-in-out animate-exit hidden z-[60] select-none">
+            <div ref={itemSelectorBox} id="itemsSelectorBox" className="relative w-full max-w-xl h-full max-h-[100dvh] overflow-y-hidden rounded-sm sm:rounded-2xl bg-white dark:bg-zinc-950 shadow-none transform transition-all duration-300 ease-in-out animate-exit hidden z-[60] select-none">
                 <div className="relative sticky top-0 w-full p-2 flex items-center justify-center border-b border-gray-200 dark:border-zinc-700 bg-[#282873] dark:bg-zinc-900 shadow-inner shadow-lg transition-colors duration-500">
                     <div className='block'>
                         <h2 ref={selectorTitle} id="selector-part-title" className="text-xl sm:text-2xl font-bold text-gray-200 dark:text-gray-100 overflow-x-hidden mr-12">Select Items</h2>

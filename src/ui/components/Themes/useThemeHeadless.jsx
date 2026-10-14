@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { appState } from '../../State/appState';
 import { StateManager } from '../../../common/syscore/StatesManager';
+import { globalEventBus } from '../../../Globals/eventBus';
 
 export const useTheme = () => {
     const [isDark, setIsDark] = useState(false);
@@ -56,7 +57,7 @@ export const useTheme = () => {
 
         // Update toolbar theme value
         try {
-            StateManager.get('UpdateToolbarTheme')(theme)
+            globalEventBus.emit('toolbar:theme:update', theme)
         } catch (err) { }
     };
 

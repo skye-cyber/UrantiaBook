@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { StateManager } from '../../common/syscore/StatesManager';
 import { loadingspinner } from '../components/StatusUI/Helpers/loader';
 import { waitForElement } from '../../common/syscore/dom_utils';
 import { ContentLoader_ins } from '../components/Panels/content_loader';
 import { BaseSearchEntry } from './Search/search_entry';
 import { PART_ID_MAP } from '../components/Reader/navigator';
 import { reactPortalBridge } from '../../common/react-portal-bridge';
+import { globalEventBus } from '../../Globals/eventBus';
 
 export const SearchResultPage = ({ }) => {
     const resultRef = useRef(null);
@@ -25,13 +25,17 @@ export const SearchResultPage = ({ }) => {
     });
 
     const showSearchResult = useCallback(() => {
-        resultContainer.current.classList.remove('translate-y-[100vh]')
-        resultContainer.current.classList.add('translate-y-0')
+        resultContainer.current.classList.remove('hidden')
+        setTimeout(() => {
+            resultContainer.current.classList.remove('translate-y-[100vh]')
+            resultContainer.current.classList.add('translate-y-0')
+        }, 0)
     })
 
     const hideSearchResult = useCallback(() => {
         resultContainer.current.classList.add('translate-y-[100vh]')
         resultContainer.current.classList.remove('translate-y-0')
+        setTimeout(() => resultContainer.current.classList.add('hidden'), 300)
     })
 
     const clearSearchResult = useCallback((content = "") => {
@@ -68,11 +72,6 @@ export const SearchResultPage = ({ }) => {
         }
     })
 
-    StateManager.set('clearSearchResult', clearSearchResult)
-    StateManager.set('prepSearchPage', prepSearchPage)
-    StateManager.set('showSearchResult', showSearchResult)
-    StateManager.set('hideSearchResult', hideSearchResult)
-
     const loadMoreResults = useCallback(() => {
         if (searchState.isLoadingMore || !searchState.hasMore) return;
 
@@ -104,18 +103,22 @@ export const SearchResultPage = ({ }) => {
     }, [searchState])
 
     useEffect(() => {
-        document.addEventListener('showSearchResult', showSearchResult)
-        document.addEventListener('hideSearchResult', hideSearchResult)
-        document.addEventListener('escape-key-down', hideSearchResult)
+        globalEventBus.on('keydown:escape', hideSearchResult)
+        globalEventBus.on('search:result:clear', (content) => clearSearchResult(content))
+        globalEventBus.on('search:page:prep', (query, rlength, results) => prepSearchPage(query, rlength, results))
+        globalEventBus.on('search:result:show', showSearchResult)
+        globalEventBus.on('search:result:hide', hideSearchResult)
         return () => {
-            document.removeEventListener('showSearchResult', showSearchResult)
-            document.removeEventListener('hideSearchResult', hideSearchResult)
-            document.removeEventListener('escape-key-down', hideSearchResult)
+            globalEventBus.off('keydown:escape', hideSearchResult)
+            globalEventBus.off('search:result:clear', (content) => clearSearchResult(content))
+            globalEventBus.off('search:page:prep', (query, rlength, results) => prepSearchPage(query, rlength, results))
+            globalEventBus.off('search:result:show', showSearchResult)
+            globalEventBus.off('search:result:hide', hideSearchResult)
         }
     })
 
     return (
-        <div ref={resultContainer} id="search-result-container" className="fixed inset-0 flex items-center justify-center sm:p-2 md:p-4 bg-black/20 backdrop-brightness-100 translate-y-[100vh] z-50 transition-all duration-300">
+        <div ref={resultContainer} id="search-result-container" className="fixed inset-0 flex items-center justify-center sm:p-2 md:p-4 bg-black/20 backdrop-brightness-100 hidden translate-y-[100vh] z-50 transition-all duration-300">
             <div className="bg-[#1d0066] dark:bg-[#0e0e2c] rounded-sm sm:rounded-lg border border-[#4800ff] dark:border-purple-600 shadow-lg max-w-full lg:max-w-4xl w-full max-h-[90dvh] flex flex-col overflow-hidden transition-colors duration-300 font-reader shadow-lg shadow-primary-950">
                 {/* Header */}
                 <div className="flex justify-between items-center p-3 bg-[#1d0066] dark:bg-[#0e0e2c] border-b border-[#4800ff]/80 dark:border-[#8a2be2]/70">
@@ -172,7 +175,7 @@ export const ResultCard = ({ result, highlightedContent, count, link_data }) => 
         ContentLoader_ins[`set${PART_ID_MAP[link_data.part_id]}`](true)
 
         // STEP2: closeResult page
-        StateManager.get('hideSearchResult')()
+        globalEventBus.emit('search:result:hide')
 
 
         //STEP3: find and click right section

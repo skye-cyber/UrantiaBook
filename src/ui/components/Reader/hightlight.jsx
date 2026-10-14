@@ -130,11 +130,7 @@ class HighlightManager {
     }
     setHighlightColor(color) {
         this.HighlightClass = this.color_map[color].className
-        document.dispatchEvent(new CustomEvent('update-active-color', {
-            detail: {
-                color_className: this.color_map[color].circle
-            }
-        }))
+        globalEventBus.emit('highlight:color:change', this.color_map[color].circle)
     }
     get_color(color) {
         return this.color_map[color]

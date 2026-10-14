@@ -15,7 +15,7 @@ export const Readable = ({ section }) => {
 
 export const Textual = ({ paragraph }) => {
     const comment = ContentHelper.checkComment(paragraph);
-    const commentHTML = `<span class='text-sm text-sky-500 font-brand'>${comment}</span>`
+    const commentHTML = `<span class='text-blue-700 dark:text-sky-500 font-brand'><i>${comment}</i></span>`
     let content = ContentHelper.cleanText(paragraph.text.replace(comment, commentHTML), paragraph.paragraph_number)
     return (
         <div

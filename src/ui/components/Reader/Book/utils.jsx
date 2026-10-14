@@ -63,9 +63,12 @@ export class ContentHelper {
     static checkComment(paragraph) {
         try {
             let comment = null;
-
-            if (paragraph.text.split('[') && paragraph.text.split('[')[1]?.slice(-1) === "]") {
-                comment = paragraph.text.split('[')[1]?.slice(0, -1) || null
+            if (paragraph.text.includes('[') && paragraph.text.includes(']')) {
+                // if (paragraph.text.split('[') && paragraph.text.split('[')[1]?.slice(-1) === "]") {
+                //     comment = paragraph.text.split('[')[1]?.slice(0, -1) || null
+                comment = paragraph.text
+                    .replace('[', '')
+                    .replace(']', '')
             } else {
                 paragraph.text.split('[')[1] || null;
             }
@@ -76,12 +79,12 @@ export class ContentHelper {
         }
     }
     static cleanText(text, parNo) {
-        const CT = text
+        const cleaned = text
             .replace(/\n+/g, '<br>')
             .replace(/\(\d+(\.\d+)?\)\s/g, "") // replace (6666.3) paper number
             .replace(/[“”]/g, '"')  // smart double quotes → straight double quote
             .replace(/[‘’]/g, "'")  // smart single quotes → straight single quote
-        return this.wrapTextInParagraphs(this.spanText(CT), parNo);
+        return this.wrapTextInParagraphs(cleaned, parNo);
 
     }
     static wrapTextInParagraphs(text, paragraph_number) {

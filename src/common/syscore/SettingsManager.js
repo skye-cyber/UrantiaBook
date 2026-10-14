@@ -4,6 +4,7 @@ import { appSettings, updateAppSettings, updateAppState } from "../../ui/State/a
 import { ChangeFontName as ChangeReaderFontName } from "../../ui/components/Reader/font_manager";
 import { textmanager } from "../../ui/components/Reader/TextManager";
 import { ubook } from "../ubook";
+import { globalEventBus } from "../../Globals/eventBus";
 
 class SettingsManager {
     constructor() {
@@ -85,15 +86,15 @@ class SettingsManager {
             case 'appearance':
                 if (key === 'theme') StateManager.set('theme', value)
                 if (key === 'fontSize') FontSizeManager_ins.changeFontSize(0, value);
-                if (key === 'focusMode') {
-                    const isfocused = StateManager.get('focusMode')
+                if (key === 'isuiFocusOn') {
+                    const isfocused = StateManager.get('isuiFocusOn')
 
                     // Toggling focus on while it's on does nothing and vice versa'
                     if (value === isfocused) return
 
-                    document.dispatchEvent(new CustomEvent('focusMode'))
-                    StateManager.get('readerTopPanelToggle')()
-                    StateManager.set('focusMode', !isfocused)
+                    globalEventBus.emit('ui:focus:change')
+                    globalEventBus.emit('panel:top:toggle')
+                    StateManager.set('isuiFocusOn', !isfocused)
                 }
                 break;
             case 'reader':

@@ -1,5 +1,6 @@
-import { useCallback, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { StateManager } from '../../../common/syscore/StatesManager';
+import { globalEventBus } from '../../../Globals/eventBus';
 
 export const TTSLoaderUI = ({ }) => {
     const loader = useRef(null)
@@ -14,9 +15,14 @@ export const TTSLoaderUI = ({ }) => {
 
     })
 
-    StateManager.set('showTTSLoader', showTTSLoader)
-    StateManager.set('hideTTSLoader', hideTTSLoader)
-
+    useEffect(() => {
+        globalEventBus.on('player:loader:show', showTTSLoader)
+        globalEventBus.on('player:loader:hide', hideTTSLoader)
+        return () => {
+            globalEventBus.off('player:loader:show', showTTSLoader)
+            globalEventBus.off('player:loader:hide', hideTTSLoader)
+        }
+    })
     return (
         <div ref={loader} id="tts-loading-ui"
             className="fixed top-3 left-1/2 -translate-x-1/2 -translate-y-full opacity-0 pointer-events-none bg-gradient-to-r from-[#4747dd] via-[#0083af] to-[#005c7d] text-white px-6 py-3 rounded-b-xl shadow-lg flex items-center gap-4 transition-transform transition-opacity duration-300 ease-out z-50 select-none">

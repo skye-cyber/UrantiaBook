@@ -4,6 +4,7 @@ import { appState } from '../../State/appState';
 import { StateManager } from '../../../common/syscore/StatesManager';
 import { modalmanager } from '../../../common/Status/Manager';
 import { ubook } from '../../../common/ubook';
+import { globalEventBus } from '../../../Globals/eventBus';
 
 export const PlayerTooltip = ({ }) => {
     const playertooltip = useRef(null)
@@ -14,7 +15,7 @@ export const PlayerTooltip = ({ }) => {
 
     const [isPlaying, SetIsPlaying] = useState(false)
 
-    const ReadInnitializer = useCallback(async (readall = false) => {
+    const PlayerStearmInit = useCallback(async (readall = false) => {
         try {
             // Hide modal to reset state if playing
             if (isPlaying) onStop()
@@ -49,27 +50,27 @@ export const PlayerTooltip = ({ }) => {
 
             text = text.replace('⇒', '')
 
-            StateManager.get('showTTSLoader')()
+            globalEventBus.emit('player:loader:show')
 
-            let audio_file = null;
             // Give loader time to show
             setTimeout(async () => {
-                audio_file = await ubook.tts.generate(text)
-
-                if (audio_file) {
-                    StateManager.get('hideTTSLoader')();
-
+                const audioFile = await ubook.tts.generate(text)
+                if (audioFile && !audioFile.includes('[ERR]')) {
                     //start playing
-                    await ubook.player.play(audio_file)
+                    await ubook.player.play(audioFile)
 
                     displayPlayerTool();
                     SetIsPlaying(true);
                 }
+                globalEventBus.emit('player:loader:hide')
             }, 500)
 
+            setTimeout(() => {
+//                 globalEventBus.emit('player:loader:hide')
+            }, 12000)
         } catch (err) {
             console.log(err || err.title || err.name || err.slice(0, 100))
-            StateManager.get('hideTTSLoader')()
+            globalEventBus.emit('player:loader:hide')
         }
     })
 
@@ -99,6 +100,24 @@ export const PlayerTooltip = ({ }) => {
         }
     })
 
+    const onPause = useCallback(() => {
+        if (isPlaying) {
+            const status = ubook.player.pause();
+
+            if (status === "paused") {
+                SetIsPlaying(false);
+            }
+        }
+    })
+    const onPlay = useCallback(() => {
+        if (!isPlaying) {
+            const status = ubook.player.resume();
+
+            if (status === 'resumed') {
+                SetIsPlaying(true);
+            }
+        }
+    })
     const onStop = useCallback(() => {
         setTimeout(() => {
             SetIsPlaying(false);
@@ -157,17 +176,21 @@ export const PlayerTooltip = ({ }) => {
         }
     })
 
-    StateManager.set('ReadInnitializer', ReadInnitializer)
-    StateManager.set('onPlayPause', onPlayPause)
-
-    //StateManager.set('displayPlayerTool', displayPlayerTool)
-    //StateManager.set('hidePlayerTool', hidePlayerTool)
-
     useEffect(() => {
-        document.addEventListener('play-finished', onPlayFinished)
+        globalEventBus.on('player:play:pause', onPlayPause)
+        globalEventBus.on('player:play', onPlay)
+        globalEventBus.on('player:pause', onPause)
+        globalEventBus.on('player:terminate', onStop)
+        globalEventBus.on('player:stream:end', onPlayFinished)
+        globalEventBus.on('player:stream:initialize', (all) => PlayerStearmInit(all))
 
         return () => {
-            document.removeEventListener('play-finished', onPlayFinished)
+            globalEventBus.off('player:stream:initialize', (all) => PlayerStearmInit(all))
+            globalEventBus.off('player:stream:end', onPlayFinished)
+            globalEventBus.off('player:terminate', onStop)
+            globalEventBus.off('player:play', onPlay)
+            globalEventBus.off('player:pause', onPause)
+            globalEventBus.off('player:play:pause', onPlayPause)
         }
     })
 

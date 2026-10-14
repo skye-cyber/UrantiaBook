@@ -4,6 +4,7 @@ import { reactPortalBridge } from '../../../../common/react-portal-bridge';
 import { modalmanager } from '../../../../common/Status/Manager';
 import { StateManager } from '../../../../common/syscore/StatesManager';
 import { ubook } from '../../../../common/ubook';
+import { globalEventBus } from '../../../../Globals/eventBus';
 
 /**
  * Create item and handle favouriting and bookmarking
@@ -32,12 +33,11 @@ export const BookItem = ({ part, paper, section, title, tag, struct }) => {
     }, [isfav, isbookmarked])
 
     const OpenSectionContent = useCallback(() => {
-        document.dispatchEvent(new CustomEvent('clear-reader-section'))
+        globalEventBus.emit('reader:clear')
         reactPortalBridge.showComponentInTarget('Readable', 'reader-content', { section: section }, 'readable_content')
         ContentHelper.scrollToTop(StateManager.get('reader-wrapper-container'))
 
-        document.dispatchEvent(new CustomEvent('hide-item-selector'))
-        //document.dispatchEvent(new CustomEvent('hide-book-content-panel'))
+        globalEventBus.emit('ui:selector:hide')
         StateManager.set('active_section', sectionRef.current)
     })
 

@@ -2,20 +2,22 @@ import { useCallback, useEffect, useRef } from 'react';
 import { selectionhelper } from '../Tooltips/Helpers/selection';
 import { hightlightsearch } from './Search/hightlightSearch';
 import { StateManager } from '../../../common/syscore/StatesManager';
+import { globalEventBus } from '../../../Globals/eventBus';
 
 export const ReaderContent = ({ }) => {
     const readerSection = useRef(null)
     const handle_selectionchange = () => {
         setTimeout(() => {
             const is_valid_selection = selectionhelper.updateAppstate()
-
-            if (!is_valid_selection) return
-
-            document.dispatchEvent(new CustomEvent('show-onselect-tooltip-menu'))
-        }, 500)
+            if (is_valid_selection) {
+                globalEventBus.emit('selection:change')
+                globalEventBus.emit('tooltip:onselect:show')
+            }
+            globalEventBus.emit('tooltip:onselect:hide')
+        }, 300)
     }
 
-    const clearSection = () => {
+    const clearReaderContent = () => {
         readerSection.current.innerHTML = ""
     }
 
@@ -45,24 +47,16 @@ export const ReaderContent = ({ }) => {
         if (window.innerWidth > 400) {
             readerSection.current.addEventListener('contextmenu', contextmenu)
         }
-        document.addEventListener('escape-key-down', () => hightlightsearch.removeHighlightedSpans())
+        globalEventBus.on('keydown:escape', hightlightsearch.removeHighlightedSpans)
         document.addEventListener('selectionchange', handle_selectionchange)
-
-        //readerSection.current.addEventListener('mouseup', () => hightlightsearch.searchPage())
-
-        // Let zoom increase font on small devices
-        document.addEventListener('clear-reader-section', clearSection)
-        // readerSection.current.addEventListener('k', (e) => {
-        //     e.preventDefault()
-        //     alert("Zoom", e)
-        // })
+        globalEventBus.on('reader:clear', clearReaderContent)
         return () => {
             if (window.innerWidth > 400) {
                 readerSection.current?.removeEventListener('contextmenu', contextmenu)
             }
-            document.removeEventListener('clear-reader-section', clearSection)
             document.removeEventListener('selectionchange', handle_selectionchange)
-            document.addEventListener('escape-key-down', () => hightlightsearch.removeHighlightedSpans())
+            globalEventBus.off('reader:clear', clearReaderContent)
+            globalEventBus.off('keydown:escape', hightlightsearch.removeHighlightedSpans)
             readerSection.current.removeEventListener('click')
         }
     })

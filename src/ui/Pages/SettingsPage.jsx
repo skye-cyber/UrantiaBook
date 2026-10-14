@@ -338,8 +338,8 @@ export const SettingsPage = () => {
                                 label="Compact Mode"
                                 description="Reduce spacing for more content"
                                 disabled={true}
-                                checked={settings.appearance.focusMode}
-                                onChange={(val) => updateSetting('appearance', 'focusMode', val)}
+                                checked={settings.appearance.isuiFocusOn}
+                                onChange={(val) => updateSetting('appearance', 'isuiFocusOn', val)}
                             />
 
                             <SettingsSwitch

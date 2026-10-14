@@ -27,8 +27,15 @@ export const configApi = {
 
 // ==================== TTS ====================
 export const ttsApi = {
-    generate: (text: string, engine: string | null = null) =>
-        invoke<string | null>('tts_generate', { text, engine }),
+    generate: (text: string, engine: string | null = null) => {
+        try {
+            const result = invoke<string | null>('tts_generate', { text, engine })
+            return result
+        } catch (err) {
+            console.error(err)
+            return null
+        }
+    },
 
     getEngines: async (): Promise<string[]> => {
         const cfg = await configApi.read();

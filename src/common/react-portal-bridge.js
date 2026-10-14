@@ -37,7 +37,7 @@ export class ReactPortalBridge {
 
     // Original global show method
     showComponent(componentType, props = {}, portal_prefix = '') {
-        const portalId = `${portal_prefix}${portal_prefix ? '-' : ''}portal-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+        const portalId = `${portal_prefix}${portal_prefix ? '-' : ''}portal-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
 
         const event = new CustomEvent('react-portal-show', {
             detail: { portalId, componentType, props }
