@@ -12,6 +12,7 @@ import { StateManager } from '../../common/syscore/StatesManager';
 import { modalmanager } from '../../common/Status/Manager';
 import { ubook } from '../../common/ubook';
 import { reactPortalBridge } from '../../common/react-portal-bridge';
+import { globalEventBus } from '../../Globals/eventBus';
 
 export const SettingsPage = () => {
     const [settings, setSettings] = useState(settingsManager.getAll());
@@ -62,14 +63,14 @@ export const SettingsPage = () => {
             }
         };
 
-        document.addEventListener('open-settings', openSettings);
-        document.addEventListener('close-settings', closeSettings);
-        document.addEventListener('escape-key-down', closeSettings);
+        globalEventBus.on('settings:open', openSettings)
+        globalEventBus.on('keydown:escape', closeSettings)
+        globalEventBus.on('settings:close', closeSettings)
 
         return () => {
-            document.removeEventListener('open-settings', openSettings);
-            document.removeEventListener('close-settings', closeSettings);
-            document.removeEventListener('escape-key-down', closeSettings);
+            globalEventBus.off('settings:open', openSettings)
+            globalEventBus.off('keydown:escape', closeSettings)
+            globalEventBus.off('settings:open', closeSettings)
         };
     }, [isModified]);
 
@@ -163,11 +164,10 @@ export const SettingsPage = () => {
     };
 
     const applysearch = useCallback(async (searchText) => {
-
         // clear previous search result
-        StateManager.get('clearSearchResult')();
+        globalEventBus.emit('search:result:clear')
 
-        const loaderPID = loadingspinner.open('Searching, please wait ...');
+        const loaderPID = await loadingspinner.open('Searching, please wait ...');
 
         setTimeout(async () => {
             const searchInput = StateManager.get('searchInput');
@@ -200,14 +200,17 @@ export const SettingsPage = () => {
                 try {
                     reactPortalBridge.closeComponent(loaderPID)
                     if (result && isTextSearch) {
-                        StateManager.get('showSearchResult')();
+                        globalEventBus.emit('search:result:show')
                     }
-                } catch (err) { console.log("E", err) }
+                } catch (err) {
+                    console.log("E", err)
+                    reactPortalBridge.closeComponent(loaderPID)
+                }
             }
         }, 200);
     }, []);
 
-    StateManager.set('applysearch', applysearch)
+    globalEventBus.on('perform:search', applysearch)
 
     // Tab configuration
     const tabs = [
