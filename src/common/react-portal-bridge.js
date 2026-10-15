@@ -1,3 +1,5 @@
+import { globalEventBus } from "../Globals/eventBus";
+
 export class ReactPortalBridge {
     constructor() {
         this.portals = new Map();
@@ -27,10 +29,7 @@ export class ReactPortalBridge {
         }
 
         props.portal_id = portalId
-        const event = new CustomEvent('react-portal-show-targeted', {
-            detail: { portalId, componentType, containerId, props }
-        });
-        document.dispatchEvent(event);
+        globalEventBus.emit('portal:show:targeted', portalId, componentType, containerId, props)
 
         return portalId;
     }
@@ -38,11 +37,7 @@ export class ReactPortalBridge {
     // Original global show method
     showComponent(componentType, props = {}, portal_prefix = '') {
         const portalId = `${portal_prefix}${portal_prefix ? '-' : ''}portal-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
-
-        const event = new CustomEvent('react-portal-show', {
-            detail: { portalId, componentType, props }
-        });
-        document.dispatchEvent(event);
+        globalEventBus.emit('portal:show', portalId, componentType, props)
 
         return portalId;
     }
@@ -52,19 +47,17 @@ export class ReactPortalBridge {
             detail: { id: portalId, prefix: prefix }
         });
         document.dispatchEvent(event);
+        globalEventBus.emit('portal:close', portalId, prefix)
     }
 
     // Close all components in a specific container
     closeAllInContainer(containerId) {
-        const event = new CustomEvent('react-portal-close-container', {
-            detail: { containerId }
-        });
-        document.dispatchEvent(event);
+        globalEventBus.emit('portal:close:container', containerId)
     }
 
     showComponentAsync(componentType, props = {}) {
         return new Promise((resolve) => {
-            const portalId = this.showComponent(componentType, {
+            this.showComponent(componentType, {
                 ...props,
                 onResolve: resolve
             });
@@ -73,7 +66,7 @@ export class ReactPortalBridge {
 
     showComponentInTargetAsync(componentType, containerId, props = {}) {
         return new Promise((resolve) => {
-            const portalId = this.showComponentInTarget(componentType, containerId, {
+            this.showComponentInTarget(componentType, containerId, {
                 ...props,
                 onResolve: resolve
             });
