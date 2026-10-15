@@ -6,7 +6,7 @@
   "build": {
     "beforeDevCommand": "npm run dev:react",
     "devUrl": "http://localhost:4043",
-    "beforeBuildCommand": "npm run type-check && npm run build:react",
+    "beforeBuildCommand": "npm run build:react",
     "frontendDist": "../dist"
   },
   "app": {

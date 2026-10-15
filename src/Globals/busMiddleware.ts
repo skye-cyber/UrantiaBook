@@ -1,6 +1,6 @@
 // Event Bus Middleware/Interceptor
-import { EventMap } from "./bustypes";
-import { EventBus } from "./eventBus.ts";
+import type { EventMap } from "./bustypes";
+import { EventBus } from "./eventBus";
 
 type Middleware = <K extends keyof EventMap>(
     event: K,
@@ -31,7 +31,7 @@ class EventBusWithMiddleware extends EventBus {
 
 // Example middleware: logging only for specific events
 const loggingMiddleware: Middleware = (event, args, next) => {
-    if (event === 'sigint') {
+    if (String(event) === 'sigint') {
         console.warn('[SIGINT] Intercepted!', args);
     }
     next();

@@ -7,7 +7,6 @@ import type {
     TTSConfig,
     AppConfig,
     ToggleResult,
-    userSettings,
 } from './types';
 import { TTSValidator } from './utils/ttsValidation';
 import { playerApi } from './player';
@@ -28,8 +27,15 @@ export const configApi = {
 
 // ==================== TTS ====================
 export const ttsApi = {
-    generate: (text: string, engine: string | null = null) =>
-        invoke<string | null>('tts_generate', { text, engine }),
+    generate: (text: string, engine: string | null = null) => {
+        try {
+            const result = invoke<string | null>('tts_generate', { text, engine })
+            return result
+        } catch (err) {
+            console.error(err)
+            return null
+        }
+    },
 
     getEngines: async (): Promise<string[]> => {
         const cfg = await configApi.read();
@@ -154,6 +160,14 @@ export const systemApi = {
 // Same as Electron — Web Audio already works identically in the Tauri webview.
 export { playerApi } from './player';
 
+// ==================== SETTINGS ====================
+// The original delegated to nonexistent IPC handlers in main.ts. Now we reuse
+// configApi directly (config.json is the settings store).
+export const settingsApi = {
+    get: () => configApi.read(),
+    save: (settings: AppConfig) => configApi.update(settings),
+    reset: () => configApi.reset(),
+};
 
 // ==================== THEME ====================
 export const themeApi = {
@@ -179,11 +193,9 @@ export const themeApi = {
 
 // Re-export everything under one namespace so React code can do:
 //   import { ubook } from '@common/ubook';
-//   ubook.config.read()  ... or
-// ubook.settings.read()
+//   ubook.config.read()  ...
 export const ubook = {
     config: configApi,
-    settings: configApi, // alias
     tts: ttsApi,
     TTSValidator,
     fs: fsApi,
@@ -193,6 +205,7 @@ export const ubook = {
     content: contentApi,
     system: systemApi,
     player: playerApi,
+    settings: settingsApi,
     theme: themeApi,
 };
 

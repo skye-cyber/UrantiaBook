@@ -1,5 +1,5 @@
 import { GenerateId } from "../../ui/components/utils/utils";
-import { reactPortalBridge } from "../react-portal-bridge";
+import { reactPortalBridge } from "../PortalBridge";
 
 export class ModalManager {
     constructor() {

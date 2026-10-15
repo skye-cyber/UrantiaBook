@@ -4,6 +4,7 @@ import { appSettings, updateAppSettings, updateAppState } from "../../ui/State/a
 import { ChangeFontName as ChangeReaderFontName } from "../../ui/components/Reader/font_manager";
 import { textmanager } from "../../ui/components/Reader/TextManager";
 import { ubook } from "../ubook";
+import { globalEventBus } from "../../Globals/eventBus";
 
 class SettingsManager {
     constructor() {
@@ -15,7 +16,9 @@ class SettingsManager {
     // Load from disk (using existing fs API)
     async loadSettings() {
         try {
-            const saved = await ubook.config.read()
+            const saved = await ubook.fs.read(
+                ubook.fs.join(ubook.fs.homedir(), '.UBook', 'config', 'user-settings.json')
+            );
             if (saved) {
                 updateAppSettings(this.mergeSettings(saved, appSettings));
                 updateAppState(saved)
@@ -29,7 +32,10 @@ class SettingsManager {
     // Save to disk
     async saveSettings() {
         try {
-            await ubook.config.update(appSettings)
+            await ubook.fs.write(
+                ubook.fs.join(ubook.fs.homedir(), '.UBook', 'config', 'user-settings.json'),
+                JSON.stringify(appSettings, null, 2)
+            );
             updateAppState(appSettings)
         } catch (e) {
             console.error('Failed to save settings:', e);
@@ -80,15 +86,15 @@ class SettingsManager {
             case 'appearance':
                 if (key === 'theme') StateManager.set('theme', value)
                 if (key === 'fontSize') FontSizeManager_ins.changeFontSize(0, value);
-                if (key === 'focusMode') {
-                    const isfocused = StateManager.get('focusMode')
+                if (key === 'isuiFocusOn') {
+                    const isfocused = StateManager.get('isuiFocusOn')
 
                     // Toggling focus on while it's on does nothing and vice versa'
                     if (value === isfocused) return
 
-                    document.dispatchEvent(new CustomEvent('focusMode'))
-                    StateManager.get('readerTopPanelToggle')()
-                    StateManager.set('focusMode', !isfocused)
+                    globalEventBus.emit('ui:focus:change')
+                    globalEventBus.emit('panel:top:toggle')
+                    StateManager.set('isuiFocusOn', !isfocused)
                 }
                 break;
             case 'reader':
@@ -138,16 +144,9 @@ class SettingsManager {
 
     // Reset to defaults
     async resetToDefaults() {
-         const settings ={
-            appearance: { theme: 'system', fontSize: 14, fontFamily: 'sans', focusMode: false, reducedMotion: false },
-            search: { defaultMode: 'text', defaultParts: [1, 2, 3, 4, 5], caseSensitive: false, wholeWords: false, historySize: 50, saveHistory: true },
-            reader: { fontSize: 18, fontFamily: 'reader', lineHeight: 1.6, maxWidth: 800, justifyText: true, autoScrollSpeed: 0 },
-            audio: { voice: 'default', speed: 0.86, pitch: 1.0, autoPlay: false },
-            privacy: { analytics: false, crashReports: true, autoSaveNotes: true },
-            shortcuts: { toggleSearch: 'Ctrl+K', toggleSettings: 'Ctrl+,', toggleReader: 'Ctrl+R', toggleDarkMode: 'Ctrl+D' }
-        };
+         const settings = appSettings
         updateAppSettings(settings)
-        await this.saveSettings();
+        await ubook.config.reset()
         this.notifyListeners();
 
         // Reapply all settings

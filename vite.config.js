@@ -79,6 +79,8 @@ export default defineConfig({
             '@common': resolve(import.meta.dirname, 'src/common'), //resolve(__dirname, 'src/common'),
             '@styles': resolve(import.meta.dirname, 'src/style'), //resolve(__dirname, 'src/styles'),
             '@types': resolve(import.meta.dirname, 'src/types'), //resolve(__dirname, 'src/types'),
+            '@globals': resolve(import.meta.dirname, 'src/Globals'), //resolve(__dirname, 'src/Globals'),
+
             // NOTE: Node polyfills removed — no longer needed with Tauri.
         },
     }
