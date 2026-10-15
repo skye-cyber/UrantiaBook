@@ -1,5 +1,5 @@
 import { StateManager } from "../syscore/StatesManager";
-import { reactPortalBridge } from "../react-portal-bridge";
+import { reactPortalBridge } from "../PortalBridge";
 import { ContentHelper } from "../../ui/components/Reader/Book/utils";
 import { modalmanager } from "../Status/Manager";
 import { ubook } from "../ubook";

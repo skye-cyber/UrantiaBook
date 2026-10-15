@@ -1,4 +1,4 @@
-import { reactPortalBridge } from "../../../common/react-portal-bridge";
+import { reactPortalBridge } from "../../../common/PortalBridge";
 import { searchcontent } from "../../../common/searchBase/contentsearch";
 import { modalmanager } from "../../../common/Status/Manager";
 import { StateManager } from "../../../common/syscore/StatesManager";

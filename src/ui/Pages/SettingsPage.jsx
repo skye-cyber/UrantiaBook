@@ -11,7 +11,7 @@ import { BaseSearchEntry } from './Search/search_entry';
 import { StateManager } from '../../common/syscore/StatesManager';
 import { modalmanager } from '../../common/Status/Manager';
 import { ubook } from '../../common/ubook';
-import { reactPortalBridge } from '../../common/react-portal-bridge';
+import { reactPortalBridge } from '../../common/PortalBridge';
 import { globalEventBus } from '../../Globals/eventBus';
 
 export const SettingsPage = () => {

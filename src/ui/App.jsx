@@ -8,7 +8,7 @@ import ErrorBoundary from './components/ErrorHandler/ErrorBoundary';
 import { StatusUI } from './components/StatusUI/StatusUI.jsx';
 import { StaticPortalContainer } from './StaticPortalContainer';
 import { StreamingPortalContainer } from './StreamingPortalContainer';
-import '../common/react-portal-bridge';
+import '../common/PortalBridge';
 import './PortalTargetRegister';
 import '../common/syscore/StatesManager';
 import '../common/Status/Manager';

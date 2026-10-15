@@ -1,6 +1,6 @@
 import  { useCallback } from 'react';
 import { modalmanager } from '../../../common/Status/Manager';
-import { reactPortalBridge } from '../../../common/react-portal-bridge';
+import { reactPortalBridge } from '../../../common/PortalBridge';
 
 export const NoteCard = ({ note, portal_id }) => {
     const ConfirmDeletion = useCallback(async () => {

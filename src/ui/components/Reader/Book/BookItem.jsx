@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { ContentHelper } from './utils';
-import { reactPortalBridge } from '../../../../common/react-portal-bridge';
+import { reactPortalBridge } from '../../../../common/PortalBridge';
 import { modalmanager } from '../../../../common/Status/Manager';
 import { StateManager } from '../../../../common/syscore/StatesManager';
 import { ubook } from '../../../../common/ubook';

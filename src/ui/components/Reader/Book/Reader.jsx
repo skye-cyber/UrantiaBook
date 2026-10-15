@@ -1,6 +1,6 @@
 import { ContentHelper } from "./utils";
 import { StateManager } from "../../../../common/syscore/StatesManager";
-import { reactPortalBridge } from "../../../../common/react-portal-bridge";
+import { reactPortalBridge } from "../../../../common/PortalBridge";
 import { ubook } from "../../../../common/ubook";
 
 /**

@@ -1,6 +1,6 @@
 import { ContentHelper } from '../Reader/Book/utils';
 import { BookReader } from '../Reader/Book/Reader';
-import { reactPortalBridge } from '../../../common/react-portal-bridge';
+import { reactPortalBridge } from '../../../common/PortalBridge';
 import { StateManager } from '../../../common/syscore/StatesManager';
 import { waitForElement } from '../../../common/syscore/dom_utils';
 import { modalmanager } from '../../../common/Status/Manager';

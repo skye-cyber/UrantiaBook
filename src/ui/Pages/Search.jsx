@@ -4,7 +4,7 @@ import { waitForElement } from '../../common/syscore/dom_utils';
 import { ContentLoader_ins } from '../components/Panels/content_loader';
 import { BaseSearchEntry } from './Search/search_entry';
 import { PART_ID_MAP } from '../components/Reader/navigator';
-import { reactPortalBridge } from '../../common/react-portal-bridge';
+import { reactPortalBridge } from '../../common/PortalBridge';
 import { globalEventBus } from '../../Globals/eventBus';
 
 export const SearchResultPage = ({ }) => {
