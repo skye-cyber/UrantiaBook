@@ -39,6 +39,9 @@ export const playerApi = {
             // Tauri: turn a local path into a webview-loadable URL.
             const url = convertFileSrc(filePath);
             const res = await fetch(url);
+            if (!res.ok) {
+              throw new Error(`Could not load audio: HTTP ${res.status} (${url})`);
+            }
             const arrayBuffer = await res.arrayBuffer();
             if (arrayBuffer.byteLength === 0) throw new Error('Empty audio buffer');
             audioBuffer = await audioContext.decodeAudioData(arrayBuffer);

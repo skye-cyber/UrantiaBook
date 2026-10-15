@@ -201,11 +201,25 @@ pub fn get_picowave_path(app: AppHandle) -> String {
 }
 
 #[tauri::command]
-pub fn tts_generate(
+pub async fn tts_generate(
     app: AppHandle,
     text: String,
     engine: Option<String>,
 ) -> Result<Option<String>, String> {
+    tauri::async_runtime::spawn_blocking(move || {
+        tts_generate_blocking(app, text, engine)
+    })
+    .await
+    .map_err(|e| e.to_string())?
+}
+
+fn tts_generate_blocking(
+    app: AppHandle,
+    text: String,
+    engine: Option<String>,
+) -> Result<Option<String>, String> {
+    // Move the current body of tts_generate here,
+    // starting with:
     if text.trim().is_empty() {
         return Ok(None);
     }
@@ -277,17 +291,23 @@ pub fn tts_generate(
             .replace("{cacheFile}", &cache_file_s),
     };
 
-    let status = if cfg!(target_os = "windows") {
-        Command::new("cmd").args(["/C", &command]).status()
-    } else {
-        Command::new("sh").args(["-c", &command]).status()
-    };
+    let timeout = std::time::Duration::from_secs(120); // Set the desired limit.
 
-    match status {
-        Ok(s) if s.success() && cache_file.exists() => Ok(Some(cache_file_s)),
-        _ => Ok(None),
+    match run_shell_with_timeout(&command, timeout) {
+        Ok((Some(0), stdout, stderr)) if cache_file.exists() => {
+            Ok(Some(cache_file_s))
+        }
+        Ok((Some(code), stdout, stderr)) => Err(format!(
+            "[ERR] TTS command exited with code {code}.\nstdout: {stdout}\nstderr: {stderr}\nExpected output file was not created: {}",
+            cache_file.display()
+        )),
+        Ok((None, stdout, stderr)) => Err(format!(
+            "[ERR] TTS command finished without an exit code.\nstdout: {stdout}\nstderr: {stderr}"
+        )),
+        Err(error) => Err(format!("[ERR] TTS command failed: {error}")),
     }
 }
+
 
 fn uuid_like() -> String {
     use std::time::{SystemTime, UNIX_EPOCH};
@@ -939,39 +959,84 @@ fn run_shell_with_timeout(
 
     let mut child = if cfg!(target_os = "windows") {
         Command::new("cmd")
-            .args(["/C", cmd])
-            .stdout(Stdio::piped())
-            .stderr(Stdio::piped())
-            .spawn()
+        .args(["/C", cmd])
+        .stdout(Stdio::piped())
+        .stderr(Stdio::piped())
+        .spawn()
     } else {
         Command::new("sh")
-            .args(["-c", cmd])
-            .stdout(Stdio::piped())
-            .stderr(Stdio::piped())
-            .spawn()
+        .args(["-c", cmd])
+        .stdout(Stdio::piped())
+        .stderr(Stdio::piped())
+        .spawn()
     }
     .map_err(|e| e.to_string())?;
 
-    // Simple polling loop for timeout (no extra deps).
-    let start = std::time::Instant::now();
-    loop {
-        match child.try_wait() {
-            Ok(Some(_status)) => break,
-            Ok(None) => {
-                if start.elapsed() >= timeout {
-                    let _ = child.kill();
-                    return Err("timeout".into());
-                }
-                std::thread::sleep(std::time::Duration::from_millis(25));
-            }
-            Err(e) => return Err(e.to_string()),
-        }
-    }
+    // Drain both pipes while the process runs, so large output cannot fill
+    // a pipe buffer and prevent the process from exiting.
+    let stdout = child.stdout.take().ok_or("Failed to capture stdout")?;
+    let stderr = child.stderr.take().ok_or("Failed to capture stderr")?;
 
-    let output = child.wait_with_output().map_err(|e| e.to_string())?;
+    let stdout_reader = std::thread::spawn(move || {
+        use std::io::Read;
+        let mut bytes = Vec::new();
+        let result = std::io::Read::read_to_end(&mut std::io::BufReader::new(stdout), &mut bytes);
+        result.map(|_| bytes).map_err(|e| e.to_string())
+    });
+
+    let stderr_reader = std::thread::spawn(move || {
+        use std::io::Read;
+        let mut bytes = Vec::new();
+        let result = std::io::Read::read_to_end(&mut std::io::BufReader::new(stderr), &mut bytes);
+        result.map(|_| bytes).map_err(|e| e.to_string())
+    });
+
+    let start = std::time::Instant::now();
+
+    let status = loop {
+        match child.try_wait() {
+            Ok(Some(status)) => break status,
+            Ok(None) if start.elapsed() >= timeout => {
+                let _ = child.kill();
+                let _ = child.wait();
+                return Err("timeout".into());
+            }
+            Ok(None) => std::thread::sleep(std::time::Duration::from_millis(25)),
+            Err(e) => {
+                let _ = child.kill();
+                let _ = child.wait();
+                return Err(e.to_string());
+            }
+        }
+    };
+
+    let stdout = stdout_reader
+    .join()
+    .map_err(|_| "stdout reader thread panicked")??
+    ;
+    let stderr = stderr_reader
+    .join()
+    .map_err(|_| "stderr reader thread panicked")??
+    ;
+
     Ok((
-        output.status.code(),
-        String::from_utf8_lossy(&output.stdout).to_string(),
-        String::from_utf8_lossy(&output.stderr).to_string(),
+        status.code(),
+        String::from_utf8_lossy(&stdout).into_owned(),
+        String::from_utf8_lossy(&stderr).into_owned(),
     ))
+}
+
+// #[tauri::command]
+async fn run_command(
+    cmd: String,
+    timeout_secs: u64,
+) -> Result<(Option<i32>, String, String), String> {
+    tauri::async_runtime::spawn_blocking(move || {
+        run_shell_with_timeout(
+            &cmd,
+            std::time::Duration::from_secs(timeout_secs),
+        )
+    })
+    .await
+    .map_err(|e| e.to_string())?
 }

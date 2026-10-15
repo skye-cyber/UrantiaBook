@@ -40,7 +40,7 @@
       "csp": null,
       "assetProtocol": {
         "enable": true,
-        "scope": ["$RESOURCE/**", "$APPDATA/**", "$HOME/.UBook/**"]
+        "scope": ["$RESOURCE/**", "$APPDATA/**", "$HOME/.UBook/**", "$HOME/.UBook/.cache/**"]
       }
     }
   },
