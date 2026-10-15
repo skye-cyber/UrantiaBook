@@ -146,9 +146,9 @@ export const StaticPortalContainer = () => {
                     console.warn(`Container ${containerId} not found in DOM`);
                     return null;
                 }
-                let portalRoot = containerElement.querySelector('.react-portal-root');
+                let portalRoot = containerElement.querySelector('.portal-root');
                 if (!portalRoot) {
-                    console.warn(`Container .react-portal-root not found in ${containerId}: Defaulting to self`);
+                    console.warn(`Container .portal-root not found in ${containerId}: Defaulting to self`);
                     portalRoot = containerElement;
                 }
 

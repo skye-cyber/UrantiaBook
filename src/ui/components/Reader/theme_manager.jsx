@@ -27,7 +27,7 @@ export class ThemeManager {
     }
     static resetTheme() {
         const readable = StateManager.get('readerSection')
-        readable.className = "react-portal-root select-text bg-white  dark:bg-gray-950 dark:border-gray-700 shadow-xl shadow-gray-300 rounded-lg selection:bg-[#ff007f]/20"
+        readable.className = "portal-root select-text bg-white  dark:bg-gray-950 dark:border-gray-700 shadow-xl shadow-gray-300 rounded-lg selection:bg-[#ff007f]/20"
     }
 }
 

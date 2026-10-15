@@ -12,9 +12,9 @@ export class ReactPortalBridge {
         this.portalContainers.set(containerId, domElement);
 
         // Create a portal root inside the target container if it doesn't exist
-        if (!domElement.querySelector('.react-portal-root')) {
+        if (!domElement.querySelector('.portal-root')) {
             const portalRoot = document.createElement('div');
-            portalRoot.className = 'react-portal-root';
+            portalRoot.className = 'portal-root';
             domElement.appendChild(portalRoot);
         }
     }
