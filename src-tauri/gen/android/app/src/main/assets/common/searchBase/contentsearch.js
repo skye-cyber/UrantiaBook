@@ -1,7 +1,9 @@
 import { StateManager } from "../syscore/StatesManager";
-import { reactPortalBridge } from "../react-portal-bridge";
+import { reactPortalBridge } from "../PortalBridge";
 import { ContentHelper } from "../../ui/components/Reader/Book/utils";
 import { modalmanager } from "../Status/Manager";
+import { ubook } from "../ubook";
+import { globalEventBus } from "../../Globals/eventBus";
 
 export class ContentSearch {
     constructor(part = '_all_') {
@@ -48,7 +50,7 @@ export class ContentSearch {
         await Promise.all(tasks);
 
         if (this.count > 0) {
-            document.dispatchEvent(new CustomEvent('show-item-selector'))
+            globalEventBus.emit('ui:selctor:show')
         } else {
             modalmanager.showMessage('Zero mtaches for query', 'warn')
         }
@@ -187,7 +189,7 @@ export class ContentSearch {
     }
 
     async readSrcFile(src) {
-        return await window.ubook.content.read(src);
+        return await ubook.content.read(src);
     }
 
     getMappedSources(ids = []) {

@@ -4,6 +4,9 @@ import { appState } from '../../State/appState';
 import { Highlighter } from '../Reader/hightlight';
 import { StateManager } from '../../../common/syscore/StatesManager';
 import { useMediaQuery } from '@mui/material';
+import { hightlightsearch } from '../Reader/Search/hightlightSearch';
+import { CopyAllOutlined, ImportExport, SaveAsOutlined, VolumeUpSharp } from '@mui/icons-material';
+import { globalEventBus } from '../../../Globals/eventBus';
 
 export const OnselectTooltip = ({ }) => {
     const tooltip = useRef(null);
@@ -49,12 +52,7 @@ export const OnselectTooltip = ({ }) => {
         }
     })
 
-    const ComposeNote = useCallback(() => {
-        // show comment modal
-        document.dispatchEvent(new CustomEvent('OpenNotesComposer'))
-    })
-
-    const showTooltip = useCallback((e) => {
+    const showTooltip = useCallback(() => {
         tooltip.current.classList.remove('hidden', '-translate-x-[200%]', 'opacity-0');
         tooltip.current.classList.add('opacity-100');
         toolTipPositioner()
@@ -70,42 +68,39 @@ export const OnselectTooltip = ({ }) => {
     })
 
 
-    const color_update = ((e) => {
-        const color = e.detail?.color_className
-        if (!color) return
-        activeColorRef.className = color
+    const color_update = ((colorClassName) => {
+        if (!colorClassName) return
+        activeColorRef.className = colorClassName
     })
 
     useEffect(() => {
-        document.addEventListener('update-active-color', color_update)
-        document.addEventListener('show-onselect-tooltip-menu', showTooltip)
-        document.addEventListener('hide-onselect-tooltip-menu', hideTooltip)
-        document.addEventListener('escape-key-down', hideTooltip)
+        globalEventBus.on('highlight:color:change', (colorClassName) => color_update(colorClassName))
+        globalEventBus.on('tooltip:onselect:show', showTooltip)
+        globalEventBus.on('tooltip:onselect:hie', showTooltip)
+        globalEventBus.on('tooltip:onselect:hide', hideTooltip)
+        globalEventBus.on('keydown:escape', hideTooltip)
         return () => {
-            document.removeEventListener('update-active-color', color_update)
-            document.removeEventListener('show-onselect-tooltip-menu', showTooltip)
-            document.removeEventListener('hide-onselect-tooltip-menu', hideTooltip)
-            document.removeEventListener('escape-key-down', hideTooltip)
+            globalEventBus.off('highlight:color:change', (colorClassName) => color_update(colorClassName))
+            globalEventBus.off('tooltip:onselect:show', showTooltip)
+            globalEventBus.off('tooltip:onselect:hide', hideTooltip)
+            globalEventBus.off('keydown:escape', hideTooltip)
         }
     })
 
     return (
         <section ref={tooltip} id="onselect-tooltip-menu"
-            className="absolute hidden -translate-x-[200%] bg-gray-900 text-white dark:bg-white dark:text-gray-900 border border-gray-700 dark:border-gray-200 text-sm rounded-lg shadow-xl px-3 py-2 z-50 transition-opacity duration-200 opacity-0 select-none">
+            className="absolute hidden -translate-x-[200%] bg-[#0c0c26] text-white dark:bg-white dark:text-gray-900 border border-gray-700 dark:border-gray-200 text-sm rounded-lg shadow-xl px-3 py-2 z-50 transition-opacity duration-200 opacity-0 select-none">
 
             <div id="tooltip-row" className="flex-row justify-start gap-2">
                 <div className="flex flex-wrap gap-2 w-fit space-x-3 mb-1">
 
-                    <button onClick={() => menuaction.copy()} className="hover:text-blue-300 dark:hover:text-blue-600"><p className="flex space-x-1"><svg xmlns="http://www.w3.org/2000/svg" className="size-6 fill-none stroke-green-500 hover:stroke-green-400 mr-1" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
-                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
-                    </svg>Copy</p></button>
+                    <button onClick={() => menuaction.copy()} className="hover:text-blue-300 dark:hover:text-blue-600"><p className="flex space-x-1"><CopyAllOutlined className="size-6 text-green-500 hover:text-green-400 mr-1" />Copy</p></button>
 
                     <button onClick={() => menuaction.search()} className="flex hover:text-green-300 dark:hover:text-green-600">
-                        <svg className="h-5 w-5 fill-indigo-400 dark:fill-blue-600 text-white dark:text-slate-200" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><path d="M480 272C480 317.9 465.1 360.3 440 394.7L566.6 521.4C579.1 533.9 579.1 554.2 566.6 566.7C554.1 579.2 533.8 579.2 521.3 566.7L394.7 440C360.3 465.1 317.9 480 272 480C157.1 480 64 386.9 64 272C64 157.1 157.1 64 272 64C386.9 64 480 157.1 480 272zM272 416C351.5 416 416 351.5 416 272C416 192.5 351.5 128 272 128C192.5 128 128 192.5 128 272C128 351.5 192.5 416 272 416z" /></svg>Search
+                        <svg className={`${useMediaQuery('(max-width: 400px)') ? 'hidden' : ''} h-5 w-5 fill-indigo-400 dark:fill-blue-600 text-white dark:text-slate-200`} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><path d="M480 272C480 317.9 465.1 360.3 440 394.7L566.6 521.4C579.1 533.9 579.1 554.2 566.6 566.7C554.1 579.2 533.8 579.2 521.3 566.7L394.7 440C360.3 465.1 317.9 480 272 480C157.1 480 64 386.9 64 272C64 157.1 157.1 64 272 64C386.9 64 480 157.1 480 272zM272 416C351.5 416 416 351.5 416 272C416 192.5 351.5 128 272 128C192.5 128 128 192.5 128 272C128 351.5 192.5 416 272 416z" /></svg>Search
                     </button>
 
-                    <button onClick={ComposeNote} className="hover:text-yellow-300 dark:hover:text-yellow-600">Save Note</button>
+                    <button onClick={() => globalEventBus.emit('pages:notes:composer:open')} className="hover:text-yellow-600 dark:hover:text-auto"><SaveAsOutlined className="size-4 text-orange-600 hover:text-orange-400/80 mr-1" />Save Note</button>
                 </div>
 
                 <div className="flex flex-wrap gap-2 w-fit space-x-3 pt-2 w-fit border-t border-gray-600 dark:border-gray-300">
@@ -118,16 +113,23 @@ export const OnselectTooltip = ({ }) => {
                             true
                         )}
                         onClick={() => Highlighter.hightlight()}
-                        className={` ${useMediaQuery('(max-width: 400px)') ? 'pointer-events-none text-gray-500' : ''} flex hover:text-yellow-400 dark:hover:text-yellow-600`}>🖊️Highlight</button>
-                    <button onClick={() => StateManager.get('ReadInnitializer')()} className="hover:text-pink-400 dark:hover:text-pink-600">
-                        🔊 Read
+                        className={` ${useMediaQuery('(max-width: 400px)') ? 'hidden pointer-events-none text-gray-500' : ''} flex hover:text-yellow-400 dark:hover:text-yellow-600`}>🖊️Highlight</button>
+                    <button
+                        disabled={useMediaQuery('(min-width: 400px)') && (
+                            true
+                        )}
+                        aria-label='Find in page'
+                        onClick={() => hightlightsearch.searchPage()}
+                        className={` ${useMediaQuery('(min-width: 400px)') ? 'hidden pointer-events-none text-gray-500' : ''} flex hover:text-yellow-400 dark:hover:text-yellow-600`}>🖊️Find</button>
+                    <button onClick={() => globalEventBus.emit('player:stream:initialize')} className="hover:text-pink-400 dark:hover:text-pink-600">
+                        <VolumeUpSharp /> Read
                     </button>
                     <button onClick={() => menuaction.handleExport()} className="hover:text-indigo-400 dark:hover:text-indigo-600">
-                        💾 Export
+                        <ImportExport /> Export
                     </button>
                 </div>
             </div>
             {/*<ColorPicker />*/}
-        </section>
+        </section >
     )
 }

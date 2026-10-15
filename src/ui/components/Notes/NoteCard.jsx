@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { modalmanager } from '../../../common/Status/Manager';
-import { reactPortalBridge } from '../../../common/react-portal-bridge';
+import { reactPortalBridge } from '../../../common/PortalBridge';
 import { BookNavigator } from '../Reader/navigator';
 import { ubook } from '../../../common/ubook';
 

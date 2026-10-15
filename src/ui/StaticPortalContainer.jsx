@@ -8,6 +8,7 @@ import { NoteCard } from './components/Notes/NoteCard';
 import { ConfirmationDialog } from './components/StatusUI/confirm';
 import { DualRingGlassLoader } from './components/StatusUI/StatusUI';
 import { ResultCard } from './Pages/Search';
+import { globalEventBus } from '../Globals/eventBus';
 
 const componentRegistry = {
     BookItem,
@@ -26,9 +27,7 @@ export const StaticPortalContainer = () => {
     const [targetedPortals, setTargetedPortals] = useState(new Map()); // containerId -> portals[]
 
     useEffect(() => {
-        const handleShowPortal = (event) => {
-            const { portalId, componentType, props } = event.detail;
-
+        const handleShowPortal = (portalId, componentType, props) => {
             setPortals(prev => [...prev, {
                 id: portalId,
                 componentType,
@@ -37,9 +36,7 @@ export const StaticPortalContainer = () => {
             }]);
         };
 
-        const handleShowTargetedPortal = (event) => {
-            const { portalId, componentType, containerId, props } = event.detail;
-
+        const handleShowTargetedPortal = (portalId, componentType, containerId, props) => {
             setTargetedPortals(prev => {
                 const newMap = new Map(prev);
                 const containerPortals = newMap.get(containerId) || [];
@@ -52,10 +49,7 @@ export const StaticPortalContainer = () => {
         };
 
 
-        const handleClosePortal = (event) => {
-            const { id, prefix } = event.detail;
-            const portalId = id
-
+        const handleClosePortal = (portalId, prefix) => {
             if (prefix) {
                 // Remove all portals that start with this portalId as prefix
                 setPortals(prev => prev.filter(portal => !portal?.id.startsWith(portalId)));
@@ -84,9 +78,7 @@ export const StaticPortalContainer = () => {
             }
         };
 
-        const handleCloseContainer = (event) => {
-            const { containerId } = event.detail;
-
+        const handleCloseContainer = (containerId) => {
             setTargetedPortals(prev => {
                 const newMap = new Map(prev);
                 newMap.delete(containerId);
@@ -94,16 +86,17 @@ export const StaticPortalContainer = () => {
             });
         };
 
-        document.addEventListener('react-portal-show', handleShowPortal);
-        document.addEventListener('react-portal-show-targeted', handleShowTargetedPortal);
-        document.addEventListener('react-portal-close', handleClosePortal);
-        document.addEventListener('react-portal-close-container', handleCloseContainer);
+        globalEventBus.on('portal:show', (pid, type, props) => handleShowPortal(pid, type, props))
+        globalEventBus.on('portal:show:targeted', (pid, type, cid, props) => handleShowTargetedPortal(pid, type, cid, props))
+        globalEventBus.on('portal:close', (id, prefix) => handleClosePortal(id, prefix))
+        globalEventBus.on('portal:close:container', (cid) => handleCloseContainer(cid))
 
         return () => {
-            document.removeEventListener('react-portal-show', handleShowPortal);
-            document.removeEventListener('react-portal-show-targeted', handleShowTargetedPortal);
-            document.removeEventListener('react-portal-close', handleClosePortal);
-            document.removeEventListener('react-portal-close-container', handleCloseContainer);
+            globalEventBus.off('portal:show', (pid, type, props) => handleShowPortal(pid, type, props))
+            globalEventBus.off('portal:show:targeted', (pid, type, cid, props) => handleShowTargetedPortal(pid, type, cid, props))
+            globalEventBus.off('portal:close', (id, prefix) => handleClosePortal(id, prefix))
+            globalEventBus.off('portal:close:container', (cid) => handleCloseContainer(cid))
+
         };
     }, []);
 
@@ -153,9 +146,9 @@ export const StaticPortalContainer = () => {
                     console.warn(`Container ${containerId} not found in DOM`);
                     return null;
                 }
-                let portalRoot = containerElement.querySelector('.react-portal-root');
+                let portalRoot = containerElement.querySelector('.portal-root');
                 if (!portalRoot) {
-                    console.warn(`Container .react-portal-root not found in ${containerId}: Defaulting to self`);
+                    console.warn(`Container .portal-root not found in ${containerId}: Defaulting to self`);
                     portalRoot = containerElement;
                 }
 

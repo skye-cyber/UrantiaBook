@@ -1,12 +1,13 @@
 import { useCallback, useEffect, useRef } from 'react';
 import { StateManager } from '../../common/syscore/StatesManager';
+import { globalEventBus } from '../../Globals/eventBus';
 
 export const NotesPage = ({ }) => {
     const noteui = useRef(null);
     const notebody = useRef(null)
     const notebackdrop = useRef(null)
 
-    const showNotes = useCallback(() => {
+    const showNotesPage = useCallback(() => {
         //note_empty ? note_empty.current.innerHTML = '' : '';
 
         noteui.current.classList.remove('pointer-events-none');
@@ -21,7 +22,7 @@ export const NotesPage = ({ }) => {
     })
 
 
-    const closeNotes = useCallback(() => {
+    const closeNotesPage = useCallback(() => {
         notebackdrop.current.classList.add('opacity-0', 'scale-95');
         notebackdrop.current.classList.remove('opacity-100', 'scale-100');
 
@@ -33,21 +34,22 @@ export const NotesPage = ({ }) => {
             noteui.current.classList.add('pointer-events-none');
         }, 400);
     })
-    StateManager.set('closeNotes', closeNotes)
+    StateManager.set('closeNotesPage', closeNotesPage)
 
     useEffect(() => {
-        document.addEventListener('show-notes', showNotes)
-        document.addEventListener('hide-notes', closeNotes)
-        document.addEventListener('escape-key-down', (e) => {
+        const onEscape = (e) => {
             if (noteui.current.classList.contains('pointer-events-none')) return
-                e.preventDefault()
-                closeNotes()
-        })
+            e.preventDefault()
+            closeNotesPage()
+        }
+        globalEventBus.on('pages::notes:open', showNotesPage)
+        globalEventBus.on('pages::notes:close', closeNotesPage)
+        globalEventBus.on('keydown:escape', (e) => onEscape(e))
 
         return () => {
-            document.removeEventListener('show-notes', showNotes)
-            document.removeEventListener('hide-notes', closeNotes)
-            document.addEventListener('escape-key-down', closeNotes)
+            globalEventBus.off('pages::notes:open', showNotesPage)
+            globalEventBus.off('pages::notes:close', closeNotesPage)
+            globalEventBus.on('keydown:escape', (e) => onEscape(e))
         }
     })
 
@@ -59,7 +61,7 @@ export const NotesPage = ({ }) => {
             <div
                 ref={notebackdrop}
                 id="notes-backdrop"
-                onClick={(e) => { if (e.target === e.currentTarget) closeNotes() }}
+                onClick={(e) => { if (e.target === e.currentTarget) closeNotesPage() }}
                 className="absolute inset-0 bg-black/30 backdrop-brightness-50 transition-all duration-100 ease-in-out opacity-0 scale-95"></div>
 
             <div
@@ -67,11 +69,11 @@ export const NotesPage = ({ }) => {
                 ref={notebody}
                 id="notebody"
                 className="relative z-10 min-w-[40vw] w-full sm:w-fit max-w-[100dvw] sm:max-w-[95vw] sd:max-w-[85vw] lg:max-w-[75vw] xl:max-w-[60vw] h-full sm:h-fit min-h-[40vh] max-h-[90dvh] sm:max-h-[99vh] p-6 bg-white dark:bg-gray-900 text-gray-800 dark:text-white rounded-sm sm:rounded-2xl shadow-xl transform scale-90 translate-y-8 opacity-0 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] overflow-hidden">
-                <button onClick={closeNotes} id="closeModal" className="absolute top-3 right-3 text-gray-500 hover:text-red-500 dark:hover:text-red-400 transition">
+                <button onClick={closeNotesPage} id="closeModal" className="absolute top-3 right-3 text-gray-500 hover:text-red-500 dark:hover:text-red-400 transition">
                     ✖
                 </button>
                 <h2 className="text-2xl font-bold mb-4 border-b border-gray-300 dark:border-cyan-400 select-none">📝 Notes</h2>
-                <section id="notecontent" className="react-portal-root w-full max-h-[80vh] xl:max-h-[95vh] overflow-y-auto overflow-x-hidden scrollbar-custom pb-16">
+                <section id="notecontent" className="portal-root w-full max-h-[80vh] xl:max-h-[95vh] overflow-y-auto overflow-x-hidden scrollbar-custom pb-16">
                 </section>
             </div>
         </div>

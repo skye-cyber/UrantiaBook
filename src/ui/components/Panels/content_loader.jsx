@@ -1,10 +1,11 @@
 import { ContentHelper } from '../Reader/Book/utils';
 import { BookReader } from '../Reader/Book/Reader';
-import { reactPortalBridge } from '../../../common/react-portal-bridge';
+import { reactPortalBridge } from '../../../common/PortalBridge';
 import { StateManager } from '../../../common/syscore/StatesManager';
 import { waitForElement } from '../../../common/syscore/dom_utils';
 import { modalmanager } from '../../../common/Status/Manager';
 import { ubook } from '../../../common/ubook';
+import { globalEventBus } from '../../../Globals/eventBus';
 
 export class ContentLoader {
     constructor() {
@@ -40,7 +41,7 @@ export class ContentLoader {
     setForeword(silent = false) {
         this.selector_title.textContent = 'Foreword'
         this.paper_container.innerHTML = ""
-        if (!silent) document.dispatchEvent(new CustomEvent('show-item-selector'))
+        if (!silent) globalEventBus.emit('ui:selctor:show')
         const reader = new BookReader(this.paper_container, this.reader_section)
         reader.load(ContentHelper.getSource('foreword_source'));
     }
@@ -51,7 +52,7 @@ export class ContentLoader {
     setLocalUniverse(silent = false) {
         this.selector_title.textContent = 'Local Universe'
         this.paper_container.innerHTML = ""
-        if (!silent) document.dispatchEvent(new CustomEvent('show-item-selector'))
+        if (!silent) globalEventBus.emit('ui:selctor:show')
         const reader = new BookReader(this.paper_container, this.reader_section)
         reader.load(ContentHelper.getSource('local_universe_source'));
     }
@@ -62,7 +63,7 @@ export class ContentLoader {
     setSuperUniverse(silent = false) {
         this.selector_title.textContent = 'Central and Superuniverse'
         this.paper_container.innerHTML = ""
-        if (!silent) document.dispatchEvent(new CustomEvent('show-item-selector'))
+        if (!silent) globalEventBus.emit('ui:selctor:show')
         const reader = new BookReader(this.paper_container, this.reader_section)
         reader.load(ContentHelper.getSource('central_superuniverses_source'));
     }
@@ -73,7 +74,7 @@ export class ContentLoader {
     setHistoryOfUrantia(silent = false) {
         this.selector_title.textContent = 'History of Urantia'
         this.paper_container.innerHTML = ""
-        if (!silent) document.dispatchEvent(new CustomEvent('show-item-selector'))
+        if (!silent) globalEventBus.emit('ui:selctor:show')
         const reader = new BookReader(this.paper_container, this.reader_section)
         reader.load(ContentHelper.getSource('history_urantia_source'));
     }
@@ -84,7 +85,7 @@ export class ContentLoader {
     setJesusTeachings(silent = false) {
         this.selector_title.textContent = 'Life and Teachings of Jesus'
         this.paper_container.innerHTML = ""
-        if (!silent) document.dispatchEvent(new CustomEvent('show-item-selector'))
+        if (!silent) globalEventBus.emit('ui:selctor:show')
         const reader = new BookReader(this.paper_container, this.reader_section)
         reader.load(ContentHelper.getSource('jesus_life_teachings_source'));
     }
@@ -97,7 +98,7 @@ export class ContentLoader {
         let data
         if (type === 'favourites') {
             data = await ubook.favourites.readAll()
-        } else{
+        } else {
             data = await ubook.bookmarks.readAll()
         }
         const items = data?.[type === 'favourites' ? 'fav' : 'bookmark'];
@@ -105,7 +106,7 @@ export class ContentLoader {
         if (!Array.isArray(items) || items.length === 0) {
             /*
             reactPortalBridge.showComponentInTarget('ContentEmpty', 'paper-container', {info: `No ${capitalize(type)} ❌🤷‍🤷`})
-            if (!silent) document.dispatchEvent(new CustomEvent('show-item-selector'))
+            if (!silent) globalEventBus.emit('ui:selctor:show')
             */
 
             return modalmanager.showMessage(`${ContentHelper.capitalize(type)} content is empty`, 'warning');
@@ -153,7 +154,7 @@ export class ContentLoader {
 
 
         }
-        if (!silent) document.dispatchEvent(new CustomEvent('show-item-selector'))
+        if (!silent) globalEventBus.emit('ui:selctor:show')
     }
 
     async loadFavourites() {
@@ -173,8 +174,8 @@ export class ContentLoader {
 
         if (!Array.isArray(items) || items.length === 0) {
             /*
-             w indow.reactPortalBridge.showComponentInTarget('ContentEmpty', 'paper-container', {info: 'You have not saved any notes'}, 'notes')
-             if (!silent) document.dispatchEvent(new CustomEvent('show-notes'))
+            reactPortalBridge.showComponentInTarget('ContentEmpty', 'paper-container', {info: 'You have not saved any notes'}, 'notes')
+             if (!silent) globalEventBus.emit('pages::notes:open')
              */
             return modalmanager.showMessage('Empty! Nothing to show.', 'warning');
         }
@@ -192,7 +193,7 @@ export class ContentLoader {
                 'notes'
             )
         }
-        if (!silent) document.dispatchEvent(new CustomEvent('show-notes'))
+        if (!silent) globalEventBus.emit('pages::notes:open')
     }
 
 }

@@ -8,6 +8,7 @@ import {
     SelectionSubmenu
 } from './SubMenu/submenu';
 import { StateManager } from '../../../common/syscore/StatesManager';
+import { globalEventBus } from '../../../Globals/eventBus';
 
 export const SelectionOption = ({ autohide, selectoption }) => {
     const submenuref = useRef(null)
@@ -35,7 +36,7 @@ export const SelectionOption = ({ autohide, selectoption }) => {
 
 export const NoteOption = ({ }) => {
     return (
-        <div onClick={() => document.dispatchEvent(new CustomEvent('OpenNotesComposer'))} className="context-item flex items-center px-4 py-2 hover:bg-gray-200 dark:hover:bg-gray-700 cursor-pointer" data-action="notes">
+        <div onClick={() => globalEventBus.emit('pages:notes:composer:open')} className="context-item flex items-center px-4 py-2 hover:bg-gray-200 dark:hover:bg-gray-700 cursor-pointer" data-action="notes">
             <svg className="h-5 w-5 mr-3 fill-gray-400 dark:fill-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><path d="M160 544C124.7 544 96 515.3 96 480L96 160C96 124.7 124.7 96 160 96L480 96C515.3 96 544 124.7 544 160L544 373.5C544 390.5 537.3 406.8 525.3 418.8L418.7 525.3C406.7 537.3 390.4 544 373.4 544L160 544zM485.5 368L392 368C378.7 368 368 378.7 368 392L368 485.5L485.5 368z" /></svg>
             <span>Custom Notes</span>
         </div>
@@ -55,7 +56,7 @@ export const ReadAllOption = ({ autohide }) => {
     return (
         <div
             onMouseEnter={() => autohide()}
-            onClick={() => StateManager.get('ReadInnitializer')(true)}
+            onClick={() => globalEventBus.emit('player:stream:initialize', true)}
             id="ReadAllAloud"
             className="context-item flex items-center px-4 py-2 hover:bg-gray-200 dark:hover:bg-gray-700 cursor-pointer" aria-label="Read aloud">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mr-3 fill-gray-400 dark:fill-white" fill="none" strokeWidth="2"
@@ -70,7 +71,10 @@ export const ReadAllOption = ({ autohide }) => {
 }
 export const PrintOption = ({ autohide }) => {
     return (
-        <div onClick={print} onMouseEnter={() => autohide()} className="context-item flex items-center px-4 py-2 hover:bg-gray-200 dark:hover:bg-gray-700 cursor-pointer" data-action="print">
+        <div onClick={()=> {
+            globalEventBus.emit('contextmenu:hide')
+            print()
+        }} onMouseEnter={() => autohide()} className="context-item flex items-center px-4 py-2 hover:bg-gray-200 dark:hover:bg-gray-700 cursor-pointer" data-action="print">
             <svg className="h-5 w-5 mr-3 fill-gray-400 dark:fill-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><path d="M128 128C128 92.7 156.7 64 192 64L405.5 64C422.5 64 438.8 70.7 450.8 82.7L493.3 125.2C505.3 137.2 512 153.5 512 170.5L512 208L128 208L128 128zM64 320C64 284.7 92.7 256 128 256L512 256C547.3 256 576 284.7 576 320L576 416C576 433.7 561.7 448 544 448L512 448L512 512C512 547.3 483.3 576 448 576L192 576C156.7 576 128 547.3 128 512L128 448L96 448C78.3 448 64 433.7 64 416L64 320zM192 480L192 512L448 512L448 416L192 416L192 480zM520 336C520 322.7 509.3 312 496 312C482.7 312 472 322.7 472 336C472 349.3 482.7 360 496 360C509.3 360 520 349.3 520 336z" /></svg>
             <span>Print Page</span>
             <span className="ml-auto text-xs text-gray-400">Ctrl+P</span>
@@ -81,8 +85,11 @@ export const PrintOption = ({ autohide }) => {
 export const BoorkmarkDisplayOption = ({ autohide }) => {
     return (
         <div
-            onMouseLeave={() => autohide()}
-            onClick={() => ContentLoader_ins.loadBookmarks()}
+            onMouseLeave={autohide}
+            onClick={() => {
+                globalEventBus.emit('contextmenu:hide')
+                ContentLoader_ins.loadBookmarks()
+            }}
             className="context-item flex items-center px-4 py-2 hover:bg-gray-200 dark:hover:bg-gray-700 cursor-pointer" data-action="viewBookmarks">
             <svg className="h-5 w-5 mr-3 fill-gray-400 dark:fill-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><path d="M192 64C156.7 64 128 92.7 128 128L128 544C128 555.5 134.2 566.2 144.2 571.8C154.2 577.4 166.5 577.3 176.4 571.4L320 485.3L463.5 571.4C473.4 577.3 485.7 577.5 495.7 571.8C505.7 566.1 512 555.5 512 544L512 128C512 92.7 483.3 64 448 64L192 64z" /></svg>
             <span>View Bookmarks</span>

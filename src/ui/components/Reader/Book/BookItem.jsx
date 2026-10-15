@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { ContentHelper } from './utils';
-import { reactPortalBridge } from '../../../../common/react-portal-bridge';
+import { reactPortalBridge } from '../../../../common/PortalBridge';
 import { modalmanager } from '../../../../common/Status/Manager';
 import { StateManager } from '../../../../common/syscore/StatesManager';
 import { ubook } from '../../../../common/ubook';
+import { globalEventBus } from '../../../../Globals/eventBus';
 
 /**
  * Create item and handle favouriting and bookmarking
@@ -31,52 +32,12 @@ export const BookItem = ({ part, paper, section, title, tag, struct }) => {
         setup()
     }, [isfav, isbookmarked])
 
-    const highLightFav = useCallback((op) => {
-        try {
-            if (!favsvg.current || !favsvg.current.classList) return;
-
-            if (!op) return ['fill-white', 'dark:fill-pink-200', 'fill-pink-600'].forEach(cls => favsvg.current.classList.toggle(cls));
-
-            // Add bookmark
-            if (op === 'add') {
-                favsvg.current.classList.add('fill-pink-600');
-                favsvg.current.classList.remove('fill-white', 'dark:fill-pink-200');
-                //remove bookmark
-            } else if (op === 'remove') {
-                favsvg.current.classList.add('fill-white', 'dark:fill-pink-200');
-                favsvg.current.classList.remove('fill-pink-600');
-            }
-        } catch (err) {
-            console.error('Error in highLightFav:', err);
-        }
-    })
-
-    const highLightBookmark = useCallback((op) => {
-        try {
-            if (!bookmarksvg.current || !bookmarksvg.current.classList) return;
-            if (!op) return ['fill-none', 'fill-blue-600'].forEach(cls => bookmarksvg.current.classList.toggle(cls));
-
-            // Add bookmark
-            if (op === 'add') {
-                bookmarksvg.current.classList.remove('fill-none');
-                bookmarksvg.current.classList.add('fill-blue-600');
-                //remove bookmark
-            } else if (op === 'remove') {
-                bookmarksvg.current.classList.add('fill-none');
-                bookmarksvg.current.classList.remove('fill-blue-600');
-            }
-        } catch (err) {
-            console.error('Error in highLightBookmark:', err);
-        }
-    })
-
     const OpenSectionContent = useCallback(() => {
-        document.dispatchEvent(new CustomEvent('clear-reader-section'))
+        globalEventBus.emit('reader:clear')
         reactPortalBridge.showComponentInTarget('Readable', 'reader-content', { section: section }, 'readable_content')
         ContentHelper.scrollToTop(StateManager.get('reader-wrapper-container'))
 
-        document.dispatchEvent(new CustomEvent('hide-item-selector'))
-        //document.dispatchEvent(new CustomEvent('hide-book-content-panel'))
+        globalEventBus.emit('ui:selector:hide')
         StateManager.set('active_section', sectionRef.current)
     })
 

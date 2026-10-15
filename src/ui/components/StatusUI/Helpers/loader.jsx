@@ -1,11 +1,11 @@
-import { reactPortalBridge } from "../../../../common/react-portal-bridge"
+import { reactPortalBridge } from "../../../../common/PortalBridge"
 
 export class LoadingSpinner {
     constructor() {
         //
     }
     async open(text) {
-        const portalId = reactPortalBridge.showComponentInTarget('DualRingGlassLoader', 'reader-content', { text: text }, 'loadingspinner')
+        const portalId = reactPortalBridge.showComponentInTarget('DualRingGlassLoader', 'main-layout', { text: text }, 'loadingspinner')
         return portalId
     }
     close() {

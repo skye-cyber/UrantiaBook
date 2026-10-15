@@ -11,6 +11,8 @@ import { BaseSearchEntry } from './Search/search_entry';
 import { StateManager } from '../../common/syscore/StatesManager';
 import { modalmanager } from '../../common/Status/Manager';
 import { ubook } from '../../common/ubook';
+import { reactPortalBridge } from '../../common/PortalBridge';
+import { globalEventBus } from '../../Globals/eventBus';
 
 export const SettingsPage = () => {
     const [settings, setSettings] = useState(settingsManager.getAll());
@@ -61,14 +63,14 @@ export const SettingsPage = () => {
             }
         };
 
-        document.addEventListener('open-settings', openSettings);
-        document.addEventListener('close-settings', closeSettings);
-        document.addEventListener('escape-key-down', closeSettings);
+        globalEventBus.on('settings:open', openSettings)
+        globalEventBus.on('keydown:escape', closeSettings)
+        globalEventBus.on('settings:close', closeSettings)
 
         return () => {
-            document.removeEventListener('open-settings', openSettings);
-            document.removeEventListener('close-settings', closeSettings);
-            document.removeEventListener('escape-key-down', closeSettings);
+            globalEventBus.off('settings:open', openSettings)
+            globalEventBus.off('keydown:escape', closeSettings)
+            globalEventBus.off('settings:open', closeSettings)
         };
     }, [isModified]);
 
@@ -112,12 +114,12 @@ export const SettingsPage = () => {
     // Reset to defaults
     const resetToDefaults = async () => {
         if (confirm('Reset all settings to default values?')) {
-            await loadingspinner.open('Resetting settings...');
+            const loaderPID = await loadingspinner.open('Resetting settings...');
             try {
                 await settingsManager.resetToDefaults();
                 setIsDirty(false);
             } finally {
-                loadingspinner.close();
+                reactPortalBridge.closeComponent(loaderPID)
             }
         }
     };
@@ -162,11 +164,10 @@ export const SettingsPage = () => {
     };
 
     const applysearch = useCallback(async (searchText) => {
-
         // clear previous search result
-        StateManager.get('clearSearchResult')();
+        globalEventBus.emit('search:result:clear')
 
-        await loadingspinner.open('Searching, please wait ...');
+        const loaderPID = await loadingspinner.open('Searching, please wait ...');
 
         setTimeout(async () => {
             const searchInput = StateManager.get('searchInput');
@@ -197,16 +198,19 @@ export const SettingsPage = () => {
 
             } finally {
                 try {
-                    loadingspinner.close();
+                    reactPortalBridge.closeComponent(loaderPID)
                     if (result && isTextSearch) {
-                        StateManager.get('showSearchResult')();
+                        globalEventBus.emit('search:result:show')
                     }
-                } catch (err) { }
+                } catch (err) {
+                    console.log("E", err)
+                    reactPortalBridge.closeComponent(loaderPID)
+                }
             }
         }, 200);
     }, []);
 
-    StateManager.set('applysearch', applysearch)
+    globalEventBus.on('perform:search', applysearch)
 
     // Tab configuration
     const tabs = [
@@ -230,10 +234,10 @@ export const SettingsPage = () => {
             {/* Settings Panel */}
             <div
                 ref={containerRef}
-                className="fixed inset-1 left-1/2 -translate-x-1/2 top-1/7 bottom-auto right-auto m-auto sm:w-[90vw] max-w-full md:max-w-4xl h-full max-h-[95dvh] bg-white dark:bg-slate-800 rounded-sm sm:rounded-2xl shadow-2xl overflow-hidden hidden translate-y-[100vh] transition-all duration-300 z-[60]"
+                className="fixed inset-1 left-1/2 -translate-x-1/2 top-0 bottom-auto right-auto m-auto sm:w-[90vw] max-w-full md:max-w-4xl h-[100dvh] bg-white dark:bg-slate-800 rounded-sm sm:rounded-2xl shadow-2xl overflow-hidden hidden translate-y-[100vh] transition-all duration-300 z-[60]"
             >
                 {/* Header */}
-                <div className="bg-gradient-to-r from-primary-600 to-primary-800 p-6 relative">
+                <div className="bg-gradient-to-r from-primary-600 to-primary-800 pt-10 sm:pt-auto p-3 relative">
                     <button
                         onClick={() => setIsVisible(false)}
                         className="absolute top-4 right-4 text-3xl text-white/80 hover:text-white transition-all duration-300 rounded-full w-10 h-10 flex items-center justify-center hover:bg-white/20"
@@ -334,8 +338,8 @@ export const SettingsPage = () => {
                                 label="Compact Mode"
                                 description="Reduce spacing for more content"
                                 disabled={true}
-                                checked={settings.appearance.focusMode}
-                                onChange={(val) => updateSetting('appearance', 'focusMode', val)}
+                                checked={settings.appearance.isuiFocusOn}
+                                onChange={(val) => updateSetting('appearance', 'isuiFocusOn', val)}
                             />
 
                             <SettingsSwitch
@@ -512,7 +516,7 @@ export const SettingsPage = () => {
                                         onClick={() => setConfigDialogOpen(true)}
                                         variant="outlined"
                                         startIcon={<SettingsIcon />}
-                                        className='dark:bg-blue-300 dark:hover:bg-blue-400'
+                                        className='dark:bg-blue-300 dark:hover:bg-blue-400 border-2 border-primary-400'
                                         sx={{
                                             borderRadius: '10px',
                                             textTransform: 'none',
@@ -520,11 +524,8 @@ export const SettingsPage = () => {
                                             py: 1,
                                             fontWeight: 500,
                                             transition: 'all 0.2s ease',
-                                            borderColor: 'divider',
-                                            color: 'text.primary',
                                             '&:hover': {
                                                 transform: 'translateY(-1px)',
-                                                borderColor: 'primary.main',
                                                 backgroundColor: 'action.hover',
                                             },
                                         }}
@@ -537,7 +538,6 @@ export const SettingsPage = () => {
                                         onClose={() => setConfigDialogOpen(false)}
                                         //                                         initialConfig={currentConfig?.tts || undefined}
                                         onSave={handleSave}
-                                        ubookConfigApi={ubook.configApi}
                                     />
                                 </div>
                             </div>
@@ -655,7 +655,7 @@ export const SettingsPage = () => {
                 </div>
 
                 {/* Footer Actions */}
-                <div className="absolute bottom-0 left-0 right-0 p-4 bg-slate-50 dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700 flex justify-between">
+                <div className="absolute bottom-5 left-0 right-0 p-4 bg-slate-50 dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700 flex justify-between">
                     <div className="flex gap-3">
                         <button
                             onClick={resetToDefaults}

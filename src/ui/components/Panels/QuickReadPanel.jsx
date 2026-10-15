@@ -1,12 +1,13 @@
 import { useCallback, useEffect, useRef } from 'react';
 import { QuickRead } from '../Reader/Book/QuickRead';
 import { StateManager } from '../../../common/syscore/StatesManager';
+import { globalEventBus } from '../../../Globals/eventBus';
 
 export const QuickReadPanel = ({ }) => {
     const panel = useRef(null)
 
-    const TogglePanel = useCallback(() => {
-        const focused = StateManager.get('focusMode')
+    const ToggleRightPanel = useCallback(() => {
+        const focused = StateManager.get('isuiFocusOn')
         focused ? showPanel() : hidePanel()
 
     })
@@ -27,18 +28,17 @@ export const QuickReadPanel = ({ }) => {
     })
 
     useEffect(() => {
-        document.addEventListener('focusMode', TogglePanel)
-        document.addEventListener('toggle-right-panel', panel_toggle_eaval)
+        globalEventBus.on('ui:focus:change', ToggleRightPanel)
+        // document.addEventListener('toggle-right-panel', panel_toggle_eaval)
 
         return () => {
-            document.removeEventListener('focusMode', TogglePanel)
-            document.removeEventListener('toggle-right-panel', panel_toggle_eaval)
+            globalEventBus.off('ui:focus:change', ToggleRightPanel)
         }
     })
 
     return (
-        <div ref={panel} id="Rightpanel" className="fixed z-[41] right-0 w-[280px] h-[calc(100vh-7vh)] shadow-md transform translate-x-full xl:translate-x-0 transition-all duration-700 ease-in-out bg-gradient-to-b from-white/95 to-gray-100/95 dark:from-primary-900/0 dark:to-primary-800/0 rounded-none border-none">
-            <div id="quick-acsess-head" className="flex justify-between w-full max-w-[280px] p-2 text-white dark:text-gray-200 bg-[#322e7f] dark:bg-[#001f2b] select-none rounded-none border-b border-[#615cff] dark:border-[#005c7d]">
+        <div ref={panel} id="Rightpanel" className="fixed z-[41] right-0 w-[300px] h-[90dvh] sm:h-[93dvh] shadow-md transform translate-x-full xl:translate-x-0 transition-all duration-700 ease-in-out bg-gradient-to-b from-white/95 to-gray-100/95 dark:from-primary-900/0 dark:to-primary-800/0 rounded-none border-none">
+            <div id="quick-acsess-head" className="flex justify-between w-full max-w-[300px] p-2 text-white dark:text-gray-200 bg-[#322e7f] dark:bg-[#001f2b] select-none rounded-none border-b border-[#615cff] dark:border-[#005c7d]">
                 <h3 className="text-lg font-semibold tracking-wide">Quick Access</h3>
                 <span onClick={hidePanel} className="text-gray-200 dark:text-sky-500 text-2xl cursor-pointer hover:rotate-45 transition-transform duration-500">&times;</span>
             </div>

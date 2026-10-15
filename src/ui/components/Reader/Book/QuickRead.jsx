@@ -55,7 +55,7 @@ export const QuickRead = ({ }) => {
             {/* Header */}
             <div className='bg-[#423eac]/25 dark:bg-[#005574]/25 dark:text-white shadow-centered-sm  shadow-[#55557f] border-b border-[#5954e8] dark:border-[#006282] block w-full'>
                 <button onClick={reload_content} aria-label="reload" title="Reload"
-                    className="fixed z-50 right-0 top-1 flex items-center gap-2 p-1 bg-blue-600/70 dark:bg-blue-500/50 dark:hover:bg-blue-600/70 text-white rounded-2xl shadow hover:bg-blue-700/80 transition duration-300">
+                    className="fixed z-50 right-8 top-2 flex items-center gap-2 p-1 bg-blue-600/70 dark:bg-blue-500/50 dark:hover:bg-blue-600/70 text-white rounded-2xl shadow hover:bg-blue-700/80 transition duration-300">
                     <svg ref={reload_icon_ref} id="reloadIcon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
                         viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
                         <path strokeLinecap="round" strokeLinejoin="round"
@@ -70,7 +70,7 @@ export const QuickRead = ({ }) => {
             </div>
 
             {/* Content */}
-            <section className='bg-[#423eac]/20 dark:bg-[#00242d]/0 pt-2 dark:text-white max-h-[84vh] pb-16 px-2 text-sm font-sans tracking-wide leading-relaxed text-gray-900 dark:text-purple-900 select-none  overflow-y-auto scrollbar-custom'>
+            <section className='bg-[#423eac]/20 dark:bg-[#002027] pt-2 dark:text-white max-h-[84vh] pb-16 px-2 text-sm font-sans tracking-wide leading-relaxed text-gray-900 dark:text-purple-900 select-none  overflow-y-auto scrollbar-custom'>
                 {random_section?.paragraphs.map((paragraph, index) => (
                     <Textual key={index} paragraph={paragraph} />
                 ))}

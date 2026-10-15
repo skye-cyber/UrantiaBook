@@ -3,6 +3,7 @@ import { appState } from '../../../State/appState';
 import { modalmanager } from '../../../../common/Status/Manager';
 import { StateManager } from '../../../../common/syscore/StatesManager';
 import { ubook } from '../../../../common/ubook';
+import { globalEventBus } from '../../../../Globals/eventBus';
 
 export const NotesComposer = () => {
     const noteModal = useRef(null);
@@ -76,16 +77,16 @@ export const NotesComposer = () => {
     StateManager.set('noteComposerComment', notComment)
 
     useEffect(() => {
-        document.addEventListener('OpenNotesComposer', openComposer);
-        document.addEventListener('closeNoteComposer', closeComposer);
-        document.addEventListener('escape-key-down', closeComposer);
-        document.addEventListener('update-note-content', updateHTML)
+        globalEventBus.on('pages:notes:composer:open', openComposer)
+        globalEventBus.on('pages:notes:composer:close', closeComposer)
+        globalEventBus.on('pages:note:content:update', updateHTML)
+        globalEventBus.on('keydown:escape', closeComposer)
 
         return () => {
-            document.removeEventListener('OpenNotesComposer', openComposer);
-            document.removeEventListener('closeNoteComposer', closeComposer);
-            document.removeEventListener('escape-key-down', closeComposer);
-            document.removeEventListener('update-note-content', updateHTML)
+            globalEventBus.off('pages:notes:composer:open', openComposer)
+            globalEventBus.off('pages:notes:composer:close', openComposer)
+            globalEventBus.off('keydown:escape', closeComposer)
+            globalEventBus.off('pages:note:content:update', updateHTML)
         };
     }, []);
 

@@ -55,10 +55,10 @@ export const DualRingGlassLoader = ({
             {/* Backdrop — light overlay with subtle blur */}
             <div
                 ref={backdrop}
-                className="fixed inset-0 z-[41] bg-black/40 backdrop-brightness-50 animate-fade-in transition-all duration-300"
+                className="fixed inset-0 z-[45] bg-black/40 backdrop-brightness-50 animate-fade-in transition-all duration-300"
             />
 
-            <section className="fixed inset-1 flex items-center justify-center z-41">
+            <section className="fixed inset-1 flex items-center justify-center z-50">
                 <div
                     ref={card}
                     className="relative flex flex-col items-center rounded-2xl p-7 shadow-2xl border animate-enter transition-all duration-700 opacity-100 backdrop-blur-md w-fit min-w-[280px] max-w-[400px]"

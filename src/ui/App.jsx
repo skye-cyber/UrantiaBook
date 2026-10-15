@@ -8,7 +8,7 @@ import ErrorBoundary from './components/ErrorHandler/ErrorBoundary';
 import { StatusUI } from './components/StatusUI/StatusUI.jsx';
 import { StaticPortalContainer } from './StaticPortalContainer';
 import { StreamingPortalContainer } from './StreamingPortalContainer';
-import '../common/react-portal-bridge';
+import '../common/PortalBridge';
 import './PortalTargetRegister';
 import '../common/syscore/StatesManager';
 import '../common/Status/Manager';
@@ -26,7 +26,7 @@ const App = () => {
         <ErrorBoundary>
             <MainLayout>
                 <Header />
-                <div className='w-full h-[100vh] flex'>
+                <div className='w-full h-[100dvh] flex'>
                     <ErrorBoundary>
                         <BookContentPanel isOpen={isSidebarOpen} onToggle={toggleSidebar} />
                         <ReaderUI />
@@ -36,7 +36,7 @@ const App = () => {
                 {/* status display modals */}
                 <div data-portal-container='messageContainer'
                     id='message-container'
-                    className='fixed top-5 right-5 z-[50] min-w-sm w-fit max-w-lg transform transition-all duration-700 ease-in-out'>
+                    className='fixed top-5 right-0 z-[50] w-72 transform transition-all duration-700 ease-in-out'>
                 </div>
                 {/* confirm dialog */}
                 <div data-portal-container='confirm-dialog-container' id='confirm-dialog-container'></div>

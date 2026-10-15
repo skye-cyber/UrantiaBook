@@ -7,6 +7,7 @@ import { ThemeManager } from '../Reader/theme_manager';
 import { appState } from '../../State/appState';
 import { ChangeFontName, FontSizeManager_ins } from '../Reader/font_manager';
 import { useMediaQuery } from '@mui/material';
+import { globalEventBus } from '../../../Globals/eventBus.ts';
 
 export const Header = ({ }) => {
     const searchContainer = useRef<HTMLDivElement>(null);
@@ -32,30 +33,30 @@ export const Header = ({ }) => {
     });
 
     const ToggleBookContentPanel = useCallback(() => {
-        document.dispatchEvent(new CustomEvent('toggle-left-panel'));
+        globalEventBus.emit('panel:left:toggle')
     }, []);
 
     const ShowSearchResult = useCallback(() => {
-        document.dispatchEvent(new CustomEvent('showSearchResult'));
+        globalEventBus.emit('search:result:show')
     }, []);
 
     const OpenSettings = useCallback(() => {
-        document.dispatchEvent(new CustomEvent('open-settings'));
+        globalEventBus.emit('settings:open')
     }, []);
 
     /**
      * Clears the interface of all distracting UI for distraction-free reading.
      */
     const focusModeToggle = useCallback(() => {
-        const focused = StateManager.get('focusMode');
-        document.dispatchEvent(new CustomEvent('focusMode'));
-        StateManager.get('readerTopPanelToggle')();
-        StateManager.set('focusMode', !focused);
+        const focused = StateManager.get('isuiFocusOn');
+        globalEventBus.emit('ui:focus:change')
+        globalEventBus.emit('panel:top:toggle')
+        StateManager.set('isuiFocusOn', !focused);
     }, []);
 
     const handle_enterKey = useCallback((e: KeyboardEvent) => {
         if (e.key === 'Enter' && !e.ctrlKey && !e.shiftKey) {
-            StateManager.get('applysearch')();
+            globalEventBus.emit('perform:search');
         }
     }, []);
 
@@ -232,7 +233,6 @@ export const Header = ({ }) => {
                         ref={searchInput}
                         id="searchInput"
                         type="text"
-                        autoFocus
                         placeholder="Search..."
                         className="w-full pl-10 pr-12 py-3 bg-indigo-950/40 dark:bg-[#004351] rounded-xl text-white placeholder-gray-100/90 dark:placeholder-primary-100 dark:text-gray-50 focus:outline-none focus:ring-2 focus:ring-primary-400 border border-indigo-950 dark:border-[#00d4ff] transition-all duration-300 selection:bg-[#55ffff]/20"
                     />
@@ -250,7 +250,9 @@ export const Header = ({ }) => {
 
                     {/* Submit Search Button */}
                     <button
-                        onClick={() => StateManager.get('applysearch')()}
+                        onClick={() => {
+                            globalEventBus.emit('perform:search');;
+                        }}
                         id="submit-search"
                         title="submit-search"
                         aria-label="submit-search"

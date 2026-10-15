@@ -1,9 +1,10 @@
-import { reactPortalBridge } from "../../../common/react-portal-bridge";
+import { reactPortalBridge } from "../../../common/PortalBridge";
 import { searchcontent } from "../../../common/searchBase/contentsearch";
 import { modalmanager } from "../../../common/Status/Manager";
 import { StateManager } from "../../../common/syscore/StatesManager";
 import { lunrsearch } from "../../../common/searchBase/LunrSearch";
 import { appSettings } from "../../State/appState";
+import { globalEventBus } from "../../../Globals/eventBus";
 
 let MAX_RESULTS = 50
 
@@ -23,17 +24,13 @@ export class BaseSearchEntry {
 
             if (!results || results.length === 0) {
                 modalmanager.showMessage('No results found', 'info');
-                StateManager.get('clearSearchResult')("No results found for the search")
+                globalEventBus.emit('search:result:clear', "No results found for the search")
                 return false
             }
             const renderResult = this.renderTextSearchResult(results, query, { start: 0, end: 10 });
 
             // Pass results and pagination info to UI
-            StateManager.get('prepSearchPage')(
-                query,
-                results.length,
-                results
-            );
+            globalEventBus.emit('search:page:prep', query, results.length, results)
 
             return {
                 success: true,

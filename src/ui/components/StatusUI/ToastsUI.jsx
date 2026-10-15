@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { GenerateId } from '../utils/utils';
 import { modalmanager } from '../../../common/Status/Manager';
-import { reactPortalBridge } from '../../../common/react-portal-bridge';
+import { reactPortalBridge } from '../../../common/PortalBridge';
 
 const typeConfig = {
     success: {
@@ -96,7 +96,7 @@ export const Toast = ({ type, message, messageId, duration = null, autoDismiss =
             ref={portalRef}
             data-pid={portal_id}
             dismisstimer={dismissTimer}
-            className="message-toast transform transition-all duration-500 ease-in-out opacity-0 translate-x-full backdrop-blur-lg mb-2"
+            className="message-toast transform transition-all duration-500 ease-in-out opacity-0 translate-x-full backdrop-blur-lg mb-2 max-w-72"
             data-message-id={messageId}
             data-auto-dismiss={autoDismiss}>
             <div className={`relative bg-white/95 ${type === 'success' ? 'dark:bg-[#28783a]/95' : type === 'info' ? 'dark:bg-[#002d87]/95' : type === 'warning' ? 'dark:bg-[#986500]/95' : 'dark:bg-[#830000]/95'} border border-secondary-400/50 dark:border-accent-200/50 rounded-2xl shadow-2xl p-5 overflow-hidden backdrop-blur-lg`}>
@@ -110,7 +110,7 @@ export const Toast = ({ type, message, messageId, duration = null, autoDismiss =
                 <div className="flex items-start relative z-10">
                     {/* Animated Icon Container */}
                     <div className="flex-shrink-0 mr-4">
-                        <div className={`w-12 h-12 ${typeConfig[type].iconBg} rounded-2xl flex items-center justify-center shadow-lg icon-pulse`}>
+                        <div className={`w-10 h-10 ${typeConfig[type].iconBg} rounded-2xl flex items-center justify-center shadow-lg icon-pulse`}>
                             <div className="w-6 h-6 text-white">
                                 <StatusSVG status={type} />
                             </div>
@@ -118,8 +118,8 @@ export const Toast = ({ type, message, messageId, duration = null, autoDismiss =
                     </div>
 
                     {/* Message Text */}
-                    <div className="flex-1 min-w-0 font-handwriting">
-                        <p className={`text-base font-semibold ${typeConfig[type].textColor} leading-relaxed tracking-tight`}>
+                    <div className="flex-1 font-handwriting">
+                        <p className={`text-base font-semibold ${typeConfig[type].textColor} leading-relaxed tracking-tight text-sm whitespace-prewrap`}>
                             {String(message)}
                         </p>
                     </div>

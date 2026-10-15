@@ -1,23 +1,25 @@
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useTheme } from '../Themes/useThemeHeadless';
 import { waitForElement } from '../../../common/syscore/dom_utils';
 import { StateManager } from '../../../common/syscore/StatesManager';
 import { ContentLoader_ins } from './content_loader';
+import { globalEventBus } from '../../../Globals/eventBus';
+import { useMediaQuery } from '@mui/material';
 
 export const BookContentPanel = ({ }) => {
     const panel = useRef<HTMLDivElement | null>(null);
     const forewordRef = useRef<HTMLLIElement | null>(null);
-
+    const isMobile = useMediaQuery('(max-width: 400px)');
     const { isDark, setTheme } = useTheme();
 
     // ---- slide state -----------------------------------------------------
 
-    const showPanel = useCallback(() => {
+    const showLeftPanel = useCallback(() => {
         panel.current?.classList.remove('-translate-x-full', 'xl:-translate-x-full');
         panel.current?.classList.add('-translate-x-0', 'xl:translate-x-0');
     }, []);
 
-    const hidePanel = useCallback(() => {
+    const hideLeftPanel = useCallback(() => {
         panel.current?.classList.add('-translate-x-full', 'xl:-translate-x-full');
         panel.current?.classList.remove('-translate-x-0', 'xl:translate-x-0');
     }, []);
@@ -26,10 +28,10 @@ export const BookContentPanel = ({ }) => {
      * Focus-mode handler: when the user enters focus mode, hide the panel;
      * when they exit, show it again.
      */
-    const ToggleBookContentPanel = useCallback(() => {
-        const focused = StateManager.get('focusMode');
-        focused ? showPanel() : hidePanel();
-    }, [showPanel, hidePanel]);
+    const ToggleLeftPanel = useCallback(() => {
+        const focused = StateManager.get('isuiFocusOn');
+        focused ? showLeftPanel() : hideLeftPanel();
+    }, [showLeftPanel, hideLeftPanel]);
 
     /**
      * Explicit open/close dispatcher. Kept in StateManager under the original
@@ -40,10 +42,8 @@ export const BookContentPanel = ({ }) => {
             window.innerWidth < 1280
                 ? panel.current?.classList.contains('-translate-x-0')
                 : panel.current?.classList.contains('xl:translate-x-0');
-        isPanelOpen ? hidePanel() : showPanel();
-    }, [showPanel, hidePanel]);
-
-    StateManager.set('BookPanelToggle', panelToggleHandler);
+        isPanelOpen ? hideLeftPanel() : showLeftPanel();
+    }, [showLeftPanel, hideLeftPanel]);
 
     // ---- lifecycle & listeners ------------------------------------------
 
@@ -55,16 +55,16 @@ export const BookContentPanel = ({ }) => {
             });
         }, 100);
 
-        document.addEventListener('focusMode', ToggleBookContentPanel);
-        document.addEventListener('toggle-left-panel', panelToggleHandler);
-        document.addEventListener('hide-book-content-panel', hidePanel);
+        globalEventBus.on('ui:focus:change', ToggleLeftPanel)
+        globalEventBus.on('panel:left:toggle', panelToggleHandler)
+        globalEventBus.off('ui:focus:change', hideLeftPanel)
 
         return () => {
-            document.removeEventListener('focusMode', ToggleBookContentPanel);
-            document.removeEventListener('toggle-left-panel', panelToggleHandler);
-            document.removeEventListener('hide-book-content-panel', hidePanel);
+            globalEventBus.off('ui:focus:change', ToggleLeftPanel)
+            globalEventBus.off('panel:left:toggle', panelToggleHandler)
+            globalEventBus.off('ui:focus:change', hideLeftPanel)
         };
-    }, [ToggleBookContentPanel, panelToggleHandler, hidePanel]);
+    }, [ToggleLeftPanel, panelToggleHandler, hideLeftPanel]);
 
     // ---- swipe gestures (mobile only) -----------------------------------
 
@@ -136,9 +136,9 @@ export const BookContentPanel = ({ }) => {
             if (panel.current) panel.current.style.transform = '';
 
             if (opening && dx >= OPEN_THRESHOLD) {
-                showPanel();
+                showLeftPanel();
             } else if (closing && dx <= CLOSE_THRESHOLD) {
-                hidePanel();
+                hideLeftPanel();
             }
 
             tracking = false;
@@ -157,7 +157,7 @@ export const BookContentPanel = ({ }) => {
             document.removeEventListener('touchend', onTouchEnd);
             document.removeEventListener('touchcancel', onTouchEnd);
         };
-    }, [showPanel, hidePanel]);
+    }, [showLeftPanel, hideLeftPanel]);
 
     // ---- render ---------------------------------------------------------
 
@@ -181,7 +181,7 @@ export const BookContentPanel = ({ }) => {
             <div
                 ref={panel}
                 id="sidepane"
-                className="fixed z-40 left-0 w-[300px] sm:w-[290px] bg-gradient-to-br from-indigo-900 via-indigo-950 to-indigo-950 dark:from-[#001f2b] dark:via-[#001f2b] dark:to-[#002733] h-[90dvh] sm:h-[93vh] shadow-[0_10px_40px_-10px_rgba(0,0,0,0.6)] dark:shadow-[0_10px_40px_-10px_rgba(0,0,0,0.8)] transform transition-transform duration-300 ease-out -translate-x-full xl:translate-x-0 select-none rounded-r-2xl overflow-hidden"
+                className="fixed z-40 left-0 w-[300px] sm:w-[300px] bg-gradient-to-br from-indigo-900 via-indigo-950 to-indigo-950 dark:from-[#001f2b] dark:via-[#001f2b] dark:to-[#002733] h-[90dvh] sm:h-[93vh] shadow-[0_10px_40px_-10px_rgba(0,0,0,0.6)] dark:shadow-[0_10px_40px_-10px_rgba(0,0,0,0.8)] transform transition-transform duration-300 ease-out -translate-x-full xl:translate-x-0 select-none rounded-r-2xl overflow-hidden"
             >
                 {/* Header */}
                 <div className="flex items-center justify-between px-4 py-3 border-b border-indigo-700/70 dark:border-[#00455e]">
@@ -191,7 +191,7 @@ export const BookContentPanel = ({ }) => {
 
                     {/* Close button — mobile only, gives an obvious exit besides swipe. */}
                     <button
-                        onClick={hidePanel}
+                        onClick={hideLeftPanel}
                         aria-label="Close panel"
                         className="xl:hidden p-1.5 rounded-md text-indigo-200 hover:text-white hover:bg-indigo-800/70 dark:hover:bg-[#00445f]/70 transition-colors duration-200"
                     >
@@ -210,14 +210,14 @@ export const BookContentPanel = ({ }) => {
                     <ul className="py-1">
                         <div onClick={() => {
                             ContentLoader_ins.setForeword()
-                            hidePanel()
+                            if(isMobile) hideLeftPanel()
                         }
                         } className={rowBase}>
                             <li ref={forewordRef} id="foreword" className={rowIcon}>📖 Foreword</li>
                         </div>
                         <div onClick={() => {
                             ContentLoader_ins.setSuperUniverse()
-                            hidePanel()
+                            if(isMobile) hideLeftPanel()
                         }
                         } className={rowBase}>
                             <li id="central-and-superuniverse" className={rowIcon}>
@@ -226,34 +226,34 @@ export const BookContentPanel = ({ }) => {
                         </div>
                         <div onClick={() => {
                             ContentLoader_ins.setLocalUniverse()
-                            hidePanel()
+                            if(isMobile) hideLeftPanel()
                         }
                         } className={rowBase}>
                             <li id="local-universe" className={rowIcon}>🌍 The Local Universe</li>
                         </div>
                         <div onClick={() => {
                             ContentLoader_ins.setHistoryOfUrantia()
-                            hidePanel()
+                            if(isMobile) hideLeftPanel()
                         }
                         } className={rowBase}>
                             <li id="history-of-urantia" className={rowIcon}>📜 The History of Urantia</li>
                         </div>
                         <div onClick={() => {
                             ContentLoader_ins.setJesusTeachings()
-                            hidePanel()
+                            if(isMobile) hideLeftPanel()
                         }
                         } className={rowBase}>
                             <li id="life-and-teachings-of-jesus" className={rowIcon}>✝️ The Life and Teachings of Jesus</li>
                         </div>
                         <div onClick={() => {
                             ContentLoader_ins.loadFavourites()
-                            hidePanel()
+                            if(isMobile) hideLeftPanel()
                         }} className={rowBase}>
                             <li id="favourite" className={rowIcon}>⭐ Favourite</li>
                         </div>
                         <div onClick={() => {
                             ContentLoader_ins.loadBookmarks()
-                            hidePanel()
+                            if(isMobile) hideLeftPanel()
                         }}
                             className={rowBase}>
                             <li id="bookmark" className={rowIcon}>🔖 Bookmarks</li>
@@ -261,7 +261,7 @@ export const BookContentPanel = ({ }) => {
                         <div
                             onClick={() => {
                                 ContentLoader_ins.renderNotes()
-                                hidePanel()
+                                if(isMobile) hideLeftPanel()
                             }}
                             className={rowBase}
                         >

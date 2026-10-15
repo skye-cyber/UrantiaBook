@@ -361,7 +361,7 @@ export const StreamingPortalContainer = () => {
                 return null;
             }
 
-            const portalRoot = containerElement.querySelector('.react-portal-root');
+            const portalRoot = containerElement.querySelector('.portal-root');
 
             if (!portalRoot) return null;
 

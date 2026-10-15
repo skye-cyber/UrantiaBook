@@ -4,6 +4,7 @@ import { BookNavigator } from './navigator';
 import { ThemeManager } from './theme_manager';
 import { StateManager } from '../../../common/syscore/StatesManager';
 import { appState } from '../../State/appState';
+import { globalEventBus } from '../../../Globals/eventBus';
 
 export const SelectChevron = ({ className = '' }) => (
     <svg
@@ -66,28 +67,25 @@ export const Controls = ({ }) => {
     const fontRef = useRef<HTMLSelectElement | null>(null);
     const ttsModel = useRef<HTMLSelectElement | null>(null);
 
-    const readerTopPanelToggle = useCallback(() => {
-        const focused = StateManager.get('focusMode');
+    const toggleTopToolbar = useCallback(() => {
+        const focused = StateManager.get('isuiFocusOn');
         panelRef.current?.classList.toggle('hidden', !focused);
     }, []);
 
-    const UpdateToobarTheme = useCallback((theme: string) => {
+    const updateToolbarTheme = useCallback((theme: string) => {
         if (themeRef.current) themeRef.current.value = theme;
     }, []);
 
-    StateManager.set('UpdateToolbarTheme', UpdateToobarTheme);
 
     useEffect(() => {
-        StateManager.set('ttsModel', ttsModel);
-        StateManager.set('readerTopPanelToggle', readerTopPanelToggle);
-
-        document.addEventListener('toggle-reader-top-panel', readerTopPanelToggle);
+        globalEventBus.on('toolbar:theme:update', (theme) => updateToolbarTheme(theme))
+        globalEventBus.on('ui:focus:change', toggleTopToolbar)
 
         return () => {
-            document.removeEventListener('toggle-reader-top-panel', readerTopPanelToggle);
-            StateManager.set('readerTopPanelToggle', null);
+            globalEventBus.off('toolbar:theme:update', (theme) => updateToolbarTheme(theme))
+            globalEventBus.off('ui:focus:change', toggleTopToolbar)
         };
-    }, [readerTopPanelToggle]);
+    }, [toggleTopToolbar]);
 
     return (
         <div ref={panelRef} id="top-utils-panel" className="select-none w-full">

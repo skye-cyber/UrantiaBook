@@ -126,7 +126,7 @@ fn wire_main_window<R: Runtime>(app: &AppHandle<R>) {
 /// Resolves the on-disk path to the current app icon. Cross-platform because
 /// it only touches the filesystem — no tray/window APIs.
 fn resolve_icon_path<R: Runtime>(app: &AppHandle<R>, _dark: bool) -> PathBuf {
-    let filename = "ubook-rounded.png";
+    let filename = "ubook.png";
 
     if cfg!(debug_assertions) {
         std::env::current_dir()
@@ -491,7 +491,7 @@ pub fn run() {
                             // Give the frontend time to boot; the frontend
                             // can also emit `app-ready` and we can listen for it.
                             // Simplest: close splash after short delay once main shows.
-                            std::thread::sleep(std::time::Duration::from_millis(1500));
+                            std::thread::sleep(std::time::Duration::from_millis(500));
                             let _ = splash_clone.close();
                         });
                     }

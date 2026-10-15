@@ -1,3 +1,4 @@
+import { globalEventBus } from '../../../../Globals/eventBus';
 import { appState } from '../../../State/appState';
 import { hightlightsearch } from "../../Reader/Search/hightlightSearch";
 import { useMediaQuery } from '@mui/material';
@@ -8,10 +9,7 @@ class SelectionHelper {
         const selectionHTML = this.selectionTohtml(selection)
 
         if (selection.type !== "Range" || selection.rangeCount === 0) {
-            document.dispatchEvent(new CustomEvent('hide-onselect-tooltip-menu'))
-            // appState.selectedText = null;
-            // appState.currentSelection = null
-            // appState.selectionRange = null;
+            globalEventBus.emit('tooltip:onselect:hide')
             return false
         }
         const range = selection.getRangeAt(0);
@@ -24,7 +22,7 @@ class SelectionHelper {
             appState.selectedText = selectedText;
             appState.selectionRange = range;
             appState.selectedHTML = selectionHTML
-            document.dispatchEvent(new CustomEvent('update-note-content'))
+            globalEventBus.emit('pages:note:content:update')
 
             // only if selected text has really changed
             if (selectedText !== previousText && useMediaQuery('(min-width: 400px)')) hightlightsearch.searchPage()

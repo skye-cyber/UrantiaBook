@@ -10,6 +10,7 @@ import {
     BoorkmarkDisplayOption,
     ReadAllOption
 } from './options';
+import { globalEventBus } from '../../../Globals/eventBus';
 
 export const ContextMenu = ({ }) => {
     const tooltip = useRef(null);
@@ -47,7 +48,7 @@ export const ContextMenu = ({ }) => {
         contextmenu.positionContextMenu(e.pageX || e.detail.pageX, e.pageY || e.detail.pageY, tooltip.current);
 
         // Hide selection tooltip
-        document.dispatchEvent(new CustomEvent('hide-onselect-tooltip-menu'))
+        globalEventBus.emit('tooltip:onselect:hide')
     })
 
     const hideTooltip = useCallback(() => {
@@ -75,21 +76,22 @@ export const ContextMenu = ({ }) => {
         document.addEventListener('click', (e) => {
             if (!tooltip?.current?.contains(e.target)) hideTooltip()
         })
-        document.addEventListener('escape-key-down', hideTooltip)
+        globalEventBus.on('keydown:escape', hideTooltip)
         readerSection.addEventListener('show-contextmenu-tooltip-menu', showTooltip)
         readerSection.addEventListener('hide-contextmenu-tooltip-menu', hideTooltip)
+        globalEventBus.on('contextmenu:hide', hideTooltip)
         return () => {
+            globalEventBus.off('contextmenu:hide', hideTooltip)
             readerSection.removeEventListener('show-contextmenu-tooltip-menu', showTooltip)
             readerSection.removeEventListener('hide-contextmenu-tooltip-menu', hideTooltip)
             document.removeEventListener('click', hideTooltip)
-            document.removeEventListener('escape-key-down', hideTooltip)
+            globalEventBus.off('keydown:escape', hideTooltip)
         }
     }, [readerSection])
 
     return (
         <div
             ref={tooltip}
-            //onClick={autohidesubmenu}
             id="contextMenu"
             className="context-menu fixed top-auto right-auto left-1/2 bg-gray-50 dark:bg-gray-800 text-gray-800 dark:text-gray-200 rounded-lg shadow-centered-sm shadow-zinc-800 py-2 min-w-[220px] h-fit max-w-fit z-50 border border-[#f8f4e9] dark:border-gray-700 transition-all duration-500 -translate-y-[5px] scale-[0.95] pointer-event-none opacity-0 active:scale-100 active:translate-y-0 scrollbar-custom select-none">
             <div className="context-menu-options">

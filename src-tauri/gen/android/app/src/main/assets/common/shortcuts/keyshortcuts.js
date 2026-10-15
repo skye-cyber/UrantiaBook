@@ -2,6 +2,7 @@ import { StateManager } from "../syscore/StatesManager";
 import { menuaction } from "../../ui/components/Tooltips/Helpers/action";
 import { BookNavigator } from "../../ui/components/Reader/navigator";
 import { FontSizeManager_ins } from "../../ui/components/Reader/font_manager";
+import { globalEventBus } from "../../Globals/eventBus";
 
 function isInputFocused() {
     const inputFields = [
@@ -25,8 +26,7 @@ export function ImplementShortcutKeys() {
             }
             else if (event.key === 'Escape') {
                 event.preventDefault();
-                //document.dispatchEvent(new CustomEvent('toggle-left-panel'))
-                document.dispatchEvent(new CustomEvent('escape-key-down'))
+                globalEventBus.emit('keydown:escape')
             }
             if (event.ctrlKey && event.key === 'A' || event.ctrlKey && event.key === 'a') {
                 const isFocused = isInputFocused();
@@ -43,7 +43,7 @@ export function ImplementShortcutKeys() {
 
             } else if ((event.ctrlKey && event.key === 'P' || event.ctrlKey && event.key === 'p') && !event.shiftKey) {
                 event.preventDefault(); // Prevent any default action
-                StateManager.get('BookPanelToggle')()
+                globalEventBus.emit('panel:left:toggle')
 
             } else if (event.key.toLocaleLowerCase() === 'p' && event.shiftKey) {
                 event.preventDefault(); // Prevent any default action
@@ -52,7 +52,7 @@ export function ImplementShortcutKeys() {
                 const isFocused = isInputFocused()
                 if (!isFocused) {
                     event.preventDefault();
-                    StateManager.get('onPlayPause')()
+                    globalEventBus.emit('player:pause')
                 }
                 // Next chapter
             } else if (event.key.toLocaleLowerCase() === 'pageup' || (event.ctrlKey && event.key.toLocaleLowerCase() === 'arrowright')) {
@@ -82,10 +82,9 @@ export function ImplementShortcutKeys() {
 }
 
 function focus() {
-    const focused = StateManager.get('focusMode')
-    document.dispatchEvent(new CustomEvent('focusMode'))
-    StateManager.get('readerTopPanelToggle')()
-    StateManager.set('focusMode', !focused)
+    const focused = StateManager.get('isuiFocusOn')
+    StateManager.set('isuiFocusOn', !focused)
+    globalEventBus.emit('panel:top:toggle')
 }
 
 ImplementShortcutKeys()
