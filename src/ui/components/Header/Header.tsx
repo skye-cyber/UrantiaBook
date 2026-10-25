@@ -288,7 +288,7 @@ export const Header = ({ }) => {
                     {/* Invisible backdrop for outside-tap dismiss. */}
                     {mobileOpen && (
                         <div
-                            className="fixed inset-0 z-0"
+                            className="fixed inset-0 z-0 safe-area-inset"
                             onClick={() => setMobileOpen(false)}
                             aria-hidden="true"
                         />

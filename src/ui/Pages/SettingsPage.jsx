@@ -227,14 +227,14 @@ export const SettingsPage = () => {
             {/* Backdrop */}
             <div
                 ref={backdropRef}
-                className="fixed inset-0 z-[41] bg-black/50 backdrop-brightness-sm hidden transition-all duration-300"
+                className="fixed inset-0 z-[41] bg-black/50 backdrop-brightness-sm hidden transition-all duration-300 safe-area-inset"
                 onClick={() => setIsVisible(false)}
             ></div>
 
             {/* Settings Panel */}
             <div
                 ref={containerRef}
-                className="fixed inset-1 left-1/2 -translate-x-1/2 top-0 bottom-auto right-auto m-auto sm:w-[90vw] max-w-full md:max-w-4xl h-[100dvh] bg-white dark:bg-slate-800 rounded-sm sm:rounded-2xl shadow-2xl overflow-hidden hidden translate-y-[100vh] transition-all duration-300 z-[60]"
+                className="fixed inset-1 left-1/2 -translate-x-1/2 top-0 bottom-auto right-auto m-auto sm:w-[90vw] max-w-full md:max-w-4xl h-[100svh] bg-white dark:bg-slate-800 rounded-sm sm:rounded-2xl shadow-2xl overflow-hidden hidden translate-y-[100vh] transition-all duration-300 z-[60] safe-area-inset pt-8"
             >
                 {/* Header */}
                 <div className="bg-gradient-to-r from-primary-600 to-primary-800 pt-10 sm:pt-auto p-3 relative">
@@ -655,7 +655,7 @@ export const SettingsPage = () => {
                 </div>
 
                 {/* Footer Actions */}
-                <div className="absolute bottom-5 left-0 right-0 p-4 bg-slate-50 dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700 flex justify-between">
+                <div className="absolute bottom-8 left-0 right-0 p-4 bg-slate-50 dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700 flex justify-between">
                     <div className="flex gap-3">
                         <button
                             onClick={resetToDefaults}

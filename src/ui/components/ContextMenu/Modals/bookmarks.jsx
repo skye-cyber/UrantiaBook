@@ -1,8 +1,6 @@
-import React from 'react';
-
 export const BookmarkModal = ({ }) => {
     return (
-        <div id="bookmarksModal" className="fixed inset-0 flex items-center justify-center z-50 hidden">
+        <div id="bookmarksModal" className="fixed inset-0 flex items-center justify-center z-50 hidden safe-area-inset">
             <div className="modal-overlay absolute inset-0"></div>
             <div className="bg-white rounded-lg shadow-xl w-full max-w-2xl mx-4 z-10">
                 <div className="p-6">

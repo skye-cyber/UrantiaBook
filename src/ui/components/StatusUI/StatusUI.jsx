@@ -10,7 +10,7 @@ export const LoadingSpinner_primitive = ({ text = "Processing, please wait..." }
 
     return (
         <>
-            <div ref={backdrop} className="fixed inset-0 z-[41] bg-black/50 backdrop-brightness-100 animate-fade-in transition-all duration-100"></div>
+            <div ref={backdrop} className="fixed inset-0 z-[41] bg-black/50 backdrop-brightness-100 animate-fade-in transition-all duration-100 safe-area-inset"></div>
             <section ref={Spinner} className='fixed inset-1 flex items-center justify-center z-41'>
                 <div ref={SpinnerBody} className="bg-white p-6 rounded-lg shadow-lg flex flex-col items-center animate-enter transition-all duration-700 opacity-100 w-fit min-w-72 max-w-[400px]">
                     {/* Spinner Animation */}
@@ -177,9 +177,9 @@ export const StatusUI = ({ isOpen, onToggle }) => {
     })
 
     return (
-        <section>
+        <section className="safe-area-inset">
             {/* General Success Modal */}
-            <div id="success-modal-GN" className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 hidden z-[60]">
+            <div id="success-modal-GN" className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 hidden z-[60] safe-area-inset">
                 <div id="successBoxBody-GN" className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 max-w-sm text-center animate-exit transition-all duration-1000">
                     {/* Animated Checkmark */}
                     <div className="flex items-center justify-center">

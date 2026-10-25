@@ -26,7 +26,7 @@ const App = () => {
         <ErrorBoundary>
             <MainLayout>
                 <Header />
-                <div className='w-full h-[100dvh] flex'>
+                <div className='h-screen w-screen flex'>
                     <ErrorBoundary>
                         <BookContentPanel isOpen={isSidebarOpen} onToggle={toggleSidebar} />
                         <ReaderUI />
@@ -36,7 +36,7 @@ const App = () => {
                 {/* status display modals */}
                 <div data-portal-container='messageContainer'
                     id='message-container'
-                    className='fixed top-5 right-0 z-[50] w-72 transform transition-all duration-700 ease-in-out'>
+                    className='fixed top-5 right-0 z-[50] w-72 transform transition-all duration-700 ease-in-out safe-area-inset'>
                 </div>
                 {/* confirm dialog */}
                 <div data-portal-container='confirm-dialog-container' id='confirm-dialog-container'></div>

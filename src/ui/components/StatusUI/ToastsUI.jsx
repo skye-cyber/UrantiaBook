@@ -214,7 +214,7 @@ export const CopyFeedback = ({ text = {
     })
 
     return (
-        <div ref={modalRef} id="copyModal" className="fixed top-6 left-1/2 transform -translate-x-1/2 z-50 opacity-0 pointer-events-none transition-all duration-500 ease-in-out">
+        <div ref={modalRef} id="copyModal" className="fixed top-6 left-1/2 transform -translate-x-1/2 z-50 opacity-0 pointer-events-none transition-all duration-500 ease-in-out safe-area-inset">
             <div className="bg-gradient-to-br from-white to-gray-50 dark:from-slate-800 dark:to-slate-900 border border-gray-200/60 dark:border-slate-600/50 rounded-2xl shadow-2xl shadow-black/20 backdrop-blur-xl p-4 min-w-[280px]">
                 {/* Animated Success Icon */}
                 <div className="flex items-center justify-center space-x-3">

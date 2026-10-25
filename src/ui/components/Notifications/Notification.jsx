@@ -3,7 +3,7 @@ import React from 'react';
 export const NotificationFlyer = ({ isOpen, onToggle }) => {
 
     return (
-        <div id="NotificationFlyer" className="fixed top-0 left-1/2 transform -translate-x-1/2 z-50 opacity-0 pointer-events-none transition-all duration-500 ease-in-out">
+        <div id="NotificationFlyer" className="fixed top-0 left-1/2 transform -translate-x-1/2 z-50 opacity-0 pointer-events-none transition-all duration-500 ease-in-out safe-area-inset">
             {/*-- Modal Content -*/}
             <div className="items-center justify-center bg-white dark:bg-gray-950 p-6 rounded-lg shadow-lg w-full max-w-md">
                 {/*-- Close Button -*/}
@@ -36,7 +36,7 @@ export const NotificationFlyer = ({ isOpen, onToggle }) => {
 
 export const Notifcation = ({ isOpen, onToggle }) => {
     return (
-        <div id="quickaiNotify" className="fixed top-0 left-1/2 transform -translate-x-1/2 z-50 opacity-0 pointer-events-none transition-all duration-500 ease-in-out">
+        <div id="quickaiNotify" className="fixed top-0 left-1/2 transform -translate-x-1/2 z-50 opacity-0 pointer-events-none transition-all duration-500 ease-in-out safe-area-inset">
             {/* Modal Content */}
             <div className="items-center justify-center bg-white dark:bg-[#24272b] p-6 rounded-lg shadow-lg w-full max-w-md border-2 border-[#141618] dark:border-[#55aaff]">
                 {/* Close Button */}

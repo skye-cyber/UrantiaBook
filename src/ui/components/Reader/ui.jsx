@@ -11,7 +11,7 @@ import { StateManager } from '../../../common/syscore/StatesManager';
 import { BookNavigator } from './navigator';
 
 const NavigatorUi = () => (
-    <section className='fixed bottom-16 left-1 flex gap-5'>
+    <section className='fixed bottom-16 left-1 flex gap-5 safe-area-inset'>
         {/* Navigate to previous section */}
         <button
             onClick={() => BookNavigator.previousSection()}

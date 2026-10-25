@@ -91,7 +91,7 @@ export const NotesComposer = () => {
     }, []);
 
     return (
-        <div ref={noteModal} id="note-modal" className="fixed inset-0 flex items-center justify-center -translate-x-full w-full transform transition-transform transition-colors duration-700 ease-in-out z-50 selection:bg-[#ff007f]/20">
+        <div ref={noteModal} id="note-modal" className="fixed inset-0 flex items-center justify-center -translate-x-full w-full transform transition-transform transition-colors duration-700 ease-in-out z-50 selection:bg-[#ff007f]/20 safe-area-inset">
             <div className="backdrop-brightness-50 absolute inset-0"></div>
             <div ref={noteBox} id="note-box" className="bg-white -translate-x-full dark:bg-gray-100 rounded-lg shadow-xl w-full max-w-md md:max-w-lg mx-4 z-10">
                 <div className="p-6">

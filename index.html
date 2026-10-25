@@ -2,14 +2,14 @@
 <html lang="en" class="h-[100vh] w-[100vw] max-h-[100vh]">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content" />
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title>Urantia Book Desktop</title>
 </head>
 <!-- Transparency to Ensure that the notch is not obstructed -->
-<body id="main" class="h-full w-[100dvw] max-h-[90dvh] sm:max-h-[100dvh] max-w-[100dvw] bg-white/0 dark:bg-[#0a0a1f]/0 sm:bg-white sm:dark:bg-[#0a0a1f] overflow-hidden">
+<body id="main" class="bg-white/0 dark:bg-[#0a0a1f]/0 sm:bg-white sm:dark:bg-[#0a0a1f] overflow-hidden antialiased">
     <!-- React Root -->
-    <main id="ui-root" class="root w-full h-full bg-white dark:bg-[#0a0a1f]"></main>
+    <main id="ui-root" class="root h-screen w-screen bg-white dark:bg-[#0a0a1f]"></main>
     <!-- React Build Script -->
     <script type="module" src="src/ui/main.tsx"></script>
 </body>

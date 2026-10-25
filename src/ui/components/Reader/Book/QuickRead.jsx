@@ -50,7 +50,7 @@ export const QuickRead = ({ }) => {
         <div
             data-portal-container='quick-read-container'
             id="quick-read-container"
-            className="overflow-y-hidden select-none transform transition-all duration-100">
+            className="overflow-y-hidden select-none transform transition-all duration-100 safe-area-inset">
 
             {/* Header */}
             <div className='bg-[#423eac]/25 dark:bg-[#005574]/25 dark:text-white shadow-centered-sm  shadow-[#55557f] border-b border-[#5954e8] dark:border-[#006282] block w-full'>

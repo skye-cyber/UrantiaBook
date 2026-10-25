@@ -175,7 +175,7 @@ export const BookContentPanel = ({ }) => {
             {/* Narrow visual affordance so users know the panel can be swiped open. */}
             <div
                 aria-hidden="true"
-                className="xl:hidden fixed left-0 top-1/2 -translate-y-1/2 w-[3px] h-16 rounded-r-full bg-indigo-500/40 dark:bg-[#00b7cf]/30 pointer-events-none z-30"
+                className="xl:hidden fixed left-0 top-1/2 -translate-y-1/2 w-[3px] h-16 rounded-r-full bg-indigo-500/40 dark:bg-[#00b7cf]/30 pointer-events-none z-30 safe-area-inset"
             />
 
             <div
