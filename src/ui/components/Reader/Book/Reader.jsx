@@ -1,7 +1,7 @@
 import { ContentHelper } from "./utils";
 import { StateManager } from "../../../../common/syscore/StatesManager";
-import { reactPortalBridge } from "../../../../common/PortalBridge";
 import { ubook } from "../../../../common/ubook";
+import { globalEventBus } from "../../../../Globals/eventBus";
 
 /**
  * Reader is responsible for rendering paper sections into a container,
@@ -29,8 +29,10 @@ export class BookReader {
      * @param {boolean} [incr=false] - (Unused) Optional flag to control numbering or UI logic.
      */
     async load(part = null, part_data = null) {
+        globalEventBus.emit('ui:selector:loading', true)
         const data = part_data || await this.api.content.read(part);
         const partData = part_data ? data : data.parts?.[0];
+        let items = []
 
         if (!partData || !partData.papers) return;
 
@@ -46,16 +48,24 @@ export class BookReader {
                     section_number: section.section_number,
                 };
 
-                reactPortalBridge.showComponentInTarget(
-                    'BookItem',
-                    'paper-container',
+                // reactPortalBridge.showComponentInTarget(
+                //     'BookItem',
+                //     'paper-container',
+                //     {
+                //         part: partData, paper: paper, section: section, title: title, tag: datatag, struct: struct
+                //     },
+                //     'book_section'
+                // )
+
+                items.push(
                     {
                         part: partData, paper: paper, section: section, title: title, tag: datatag, struct: struct
-                    },
-                    'book_section'
+                    }
                 )
             }
         }
+        globalEventBus.emit('ui:selector:setitems',items)
+        setTimeout(() => globalEventBus.emit('ui:selector:loading', false), 0)
     }
 
     /**

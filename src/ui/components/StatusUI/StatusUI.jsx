@@ -167,7 +167,7 @@ export const GradientOrbLoader = ({
 };
 
 
-export const StatusUI = ({ isOpen, onToggle }) => {
+export const StatusUI = ({ }) => {
     const hideErrorModal = useCallback(() => {
         hideStatus('error')
     })

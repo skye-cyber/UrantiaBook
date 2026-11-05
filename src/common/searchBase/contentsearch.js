@@ -50,7 +50,7 @@ export class ContentSearch {
         await Promise.all(tasks);
 
         if (this.count > 0) {
-            globalEventBus.emit('ui:selctor:show')
+            globalEventBus.emit('ui:selector:show')
         } else {
             modalmanager.showMessage('Zero mtaches for query', 'warn')
         }

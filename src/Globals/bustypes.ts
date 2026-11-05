@@ -1,15 +1,19 @@
 // import { RefAttributes } from "react";
 
+import { BookItemInterface } from "../ui/types/global";
+
 export type EventMap = {
     'perform:search': []
     'ui:focus:change': []
     'ui:selector:hide': []
-    'ui:selctor:show': []
+    'ui:selector:show': []
+    'ui:selector:loading': [state: boolean]
+    'ui:selector:setitems': [items: BookItemInterface[]]
     'panel:left:toggle': []
     'panel:top:toggle': []
     'panel:right:toggle': []
     'reader:clear': []
-    'keydown:escape': []
+    'keydown:escape': [e: Event]
     'selection:change': []
     'highlight:color:change': [colorClassName: string]
     'tooltip:onselect:show': []

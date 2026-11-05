@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { useTheme } from '../Themes/useThemeHeadless';
+import { useTheme } from '../Themes/ThemeContext.tsx';
 import { StateManager } from '../../../common/syscore/StatesManager';
 import { waitForElement } from '../../../common/syscore/dom_utils';
 import { SelectChevron } from '../Reader/controlbar.tsx';

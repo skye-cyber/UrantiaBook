@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { useTheme } from '../Themes/useThemeHeadless';
+import { useCallback, useEffect, useRef } from 'react';
+import { useTheme } from '../Themes/ThemeContext';
 import { waitForElement } from '../../../common/syscore/dom_utils';
 import { StateManager } from '../../../common/syscore/StatesManager';
 import { ContentLoader_ins } from './content_loader';
@@ -48,13 +48,6 @@ export const BookContentPanel = ({ }) => {
     // ---- lifecycle & listeners ------------------------------------------
 
     useEffect(() => {
-        setTimeout(() => {
-            ContentLoader_ins.setForeword(true);
-            waitForElement('#paper-container > :first-child', (el: HTMLElement) => {
-                (el as HTMLElement).click();
-            });
-        }, 100);
-
         globalEventBus.on('ui:focus:change', ToggleLeftPanel)
         globalEventBus.on('panel:left:toggle', panelToggleHandler)
         globalEventBus.off('ui:focus:change', hideLeftPanel)
@@ -205,7 +198,7 @@ export const BookContentPanel = ({ }) => {
 
                 {/* Navigation list */}
                 <section
-                    className="h-fit max-h-[72%] overflow-y-auto scrollbar-custom mx-2 sm:mx-1 mt-2 rounded-lg bg-indigo-950/40 dark:bg-[#002b36]"
+                    className="h-fit min-h-[70%] max-h-[76%] overflow-y-auto scrollbar-custom mx-2 sm:mx-1 mt-2 rounded-lg bg-indigo-950/40 dark:bg-[#002b36]"
                 >
                     <ul className="py-1">
                         <div onClick={() => {

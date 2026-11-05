@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { appState } from '../../State/appState';
-import { StateManager } from '../../../common/syscore/StatesManager';
 import { globalEventBus } from '../../../Globals/eventBus';
 
 export const useTheme = () => {

@@ -1,10 +1,12 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { ContentHelper } from './utils';
 import { reactPortalBridge } from '../../../../common/PortalBridge';
 import { modalmanager } from '../../../../common/Status/Manager';
 import { StateManager } from '../../../../common/syscore/StatesManager';
 import { ubook } from '../../../../common/ubook';
 import { globalEventBus } from '../../../../Globals/eventBus';
+import type { BookItemInterface } from '../../../types/global';
+import { FavouriteData } from '../../../../common/types';
 
 /**
  * Create item and handle favouriting and bookmarking
@@ -14,18 +16,17 @@ import { globalEventBus } from '../../../../Globals/eventBus';
     * @param {Object} section - Section data.
     * @param {Object} title - Part name/title.
  */
-export const BookItem = ({ part, paper, section, title, tag, struct }) => {
-    const favsvg = useRef(null)
-    const bookmarksvg = useRef(null)
-    const sectionRef = useRef(null)
-    const [isfav, setfav] = useState(false)
-    const [isbookmarked, setbookmarked] = useState(false)
-
+export const BookItem: React.FC<BookItemInterface> = ({ part, paper, section, title, tag, struct }) => {
+    const favButton = useRef<HTMLButtonElement | null>(null)
+    const bookmarksButton = useRef<HTMLButtonElement | null>(null)
+    const sectionRef = useRef<HTMLLIElement | null>(null)
+    const [isfav, setfav] = useState<boolean>(false)
+    const [isbookmarked, setbookmarked] = useState<boolean>(false)
 
     // console.log(part, paper, section,title,tag)
     const setup = async () => {
-        setfav(await ContentHelper.isFavourited(struct))
-        setbookmarked(await ContentHelper.isBookmarked(struct))
+        setfav(await ContentHelper.isFavourited(struct) || false)
+        setbookmarked(await ContentHelper.isBookmarked(struct) || false)
     }
 
     useEffect(() => {
@@ -39,7 +40,7 @@ export const BookItem = ({ part, paper, section, title, tag, struct }) => {
 
         globalEventBus.emit('ui:selector:hide')
         StateManager.set('active_section', sectionRef.current)
-    })
+    }, [])
 
     /**
      * Handles toggling of favourite state and displays appropriate toast.
@@ -48,7 +49,7 @@ export const BookItem = ({ part, paper, section, title, tag, struct }) => {
     const FavouriteItem = useCallback(async () => {
         const structure = ContentHelper.createStructure(section, paper, part);
 
-        const status = await ubook.favourites.toggle(structure);
+        const status = await ubook.favourites.toggle(structure as FavouriteData);
         if (status.success) {
             //highLightFav(status.task);
             setfav(status.task === 'add')
@@ -57,7 +58,7 @@ export const BookItem = ({ part, paper, section, title, tag, struct }) => {
                 ? modalmanager.showMessage('Item Favourited 💝', 'info')
                 : modalmanager.showMessage('Item Unfavourited 💔', 'info')
         }
-    })
+    }, [])
 
     /**
      * Handles toggling of bookmark state and displays appropriate toast.
@@ -65,7 +66,7 @@ export const BookItem = ({ part, paper, section, title, tag, struct }) => {
      */
     const BookmarkItem = useCallback(async () => {
         const structure = ContentHelper.createStructure(section, paper, part);
-        const status = await ubook.bookmarks.toggle(structure);
+        const status = await ubook.bookmarks.toggle(structure as FavouriteData);
         if (status.success) {
             //highLightBookmark(status.task);
             setbookmarked(status.task === 'add')
@@ -76,7 +77,7 @@ export const BookItem = ({ part, paper, section, title, tag, struct }) => {
                 modalmanager.showMessage('Item Unbookmarked', 'info')
             }
         }
-    })
+    }, [])
 
     return (
         <li
@@ -84,15 +85,15 @@ export const BookItem = ({ part, paper, section, title, tag, struct }) => {
             data-title={title}
             ref={sectionRef}
             onClick={(e) => {
-                if (![bookmarksvg.current.parentElement, favsvg.current.parentElement].some(el => el.contains(e.target) || el === e.target)) {
+                if (![bookmarksButton.current, favButton.current].some(el => (el as any).contains(e.target) || el === e.target)) {
                     e.preventDefault()
                     OpenSectionContent()
                 }
             }
             }
             className='flex items-center justify-between gap-4 py-3 hover:bg-gray-200 dark:hover:bg-slate-900 hover:rounded-md transition-colors duration-0'>
-            <button onClick={BookmarkItem} id="bookmark" className="rounded-full p-2 hover:bg-blue-100 dark:hover:bg-blue-900 text-blue-500 hover:text-blue-700 transition focus:outline-none">
-                <svg ref={bookmarksvg} xmlns="http://www.w3.org/2000/svg" className={`w-5 h-5 ${isbookmarked ? 'fill-blue-600' : 'fill-none'} stroke-blue-500`} viewBox="0 0 24 24">
+            <button ref={bookmarksButton} onClick={BookmarkItem} id="bookmark" className="rounded-full p-2 hover:bg-blue-100 dark:hover:bg-blue-900 text-blue-500 hover:text-blue-700 transition focus:outline-none">
+                <svg xmlns="http://www.w3.org/2000/svg" className={`w-5 h-5 ${isbookmarked ? 'fill-blue-600' : 'fill-none'} stroke-blue-500`} viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 5v14l7-5 7 5V5H5z" />
                 </svg>
             </button>
@@ -102,8 +103,8 @@ export const BookItem = ({ part, paper, section, title, tag, struct }) => {
                     <p className="text-sm text-gray-500 dark:gray-100">{(paper.paper_id !== 0) ? `Paper ${paper.paper_id}` : 'Foreword'}</p>
                 </div>
             </div>
-            <button onClick={FavouriteItem} id="favourite" className="rounded-full p-1.5 hover:bg-pink-300 dark:hover:bg-pink-900 text-pink-100 hover:text-pink-700 transition-colors duration-300 ease-in-out focus:outline-none">
-                <svg ref={favsvg} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className={`w-7 h-7 ${isfav ? 'fill-pink-600' : `fill-white dark:fill-pink-200`} stroke-pink-600`}>
+            <button ref={favButton} onClick={FavouriteItem} id="favourite" className="rounded-full p-1.5 hover:bg-pink-300 dark:hover:bg-pink-900 text-pink-100 hover:text-pink-700 transition-colors duration-300 ease-in-out focus:outline-none">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className={`w-7 h-7 ${isfav ? 'fill-pink-600' : `fill-white dark:fill-pink-200`} stroke-pink-600`}>
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
                         d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                 </svg>

@@ -3,7 +3,7 @@ export const MainLayout = ({ children }) => {
         <div
             data-portal-container='main-layout'
             id="main-layout"
-            className="h-screen w-screen overflow-hidden">
+            className="relative h-screen w-screen overflow-hidden">
             {children}
         </div>
     );

@@ -40,8 +40,8 @@ export class ContentLoader {
      */
     setForeword(silent = false) {
         this.selector_title.textContent = 'Foreword'
-        this.paper_container.innerHTML = ""
-        if (!silent) globalEventBus.emit('ui:selctor:show')
+        globalEventBus.emit('ui:selector:cleared', true)
+        if (!silent) globalEventBus.emit('ui:selector:show')
         const reader = new BookReader(this.paper_container, this.reader_section)
         reader.load(ContentHelper.getSource('foreword_source'));
     }
@@ -51,8 +51,7 @@ export class ContentLoader {
      */
     setLocalUniverse(silent = false) {
         this.selector_title.textContent = 'Local Universe'
-        this.paper_container.innerHTML = ""
-        if (!silent) globalEventBus.emit('ui:selctor:show')
+        if (!silent) globalEventBus.emit('ui:selector:show')
         const reader = new BookReader(this.paper_container, this.reader_section)
         reader.load(ContentHelper.getSource('local_universe_source'));
     }
@@ -62,8 +61,8 @@ export class ContentLoader {
      */
     setSuperUniverse(silent = false) {
         this.selector_title.textContent = 'Central and Superuniverse'
-        this.paper_container.innerHTML = ""
-        if (!silent) globalEventBus.emit('ui:selctor:show')
+        globalEventBus.emit('ui:selector:cleared', true)
+        if (!silent) globalEventBus.emit('ui:selector:show')
         const reader = new BookReader(this.paper_container, this.reader_section)
         reader.load(ContentHelper.getSource('central_superuniverses_source'));
     }
@@ -73,8 +72,9 @@ export class ContentLoader {
      */
     setHistoryOfUrantia(silent = false) {
         this.selector_title.textContent = 'History of Urantia'
-        this.paper_container.innerHTML = ""
-        if (!silent) globalEventBus.emit('ui:selctor:show')
+        globalEventBus.emit('ui:selector:cleared', true)
+
+        if (!silent) globalEventBus.emit('ui:selector:show')
         const reader = new BookReader(this.paper_container, this.reader_section)
         reader.load(ContentHelper.getSource('history_urantia_source'));
     }
@@ -84,8 +84,7 @@ export class ContentLoader {
      */
     setJesusTeachings(silent = false) {
         this.selector_title.textContent = 'Life and Teachings of Jesus'
-        this.paper_container.innerHTML = ""
-        if (!silent) globalEventBus.emit('ui:selctor:show')
+        if (!silent) globalEventBus.emit('ui:selector:show')
         const reader = new BookReader(this.paper_container, this.reader_section)
         reader.load(ContentHelper.getSource('jesus_life_teachings_source'));
     }
@@ -106,14 +105,13 @@ export class ContentLoader {
         if (!Array.isArray(items) || items.length === 0) {
             /*
             reactPortalBridge.showComponentInTarget('ContentEmpty', 'paper-container', {info: `No ${capitalize(type)} ❌🤷‍🤷`})
-            if (!silent) globalEventBus.emit('ui:selctor:show')
+            if (!silent) globalEventBus.emit('ui:selector:show')
             */
 
             return modalmanager.showMessage(`${ContentHelper.capitalize(type)} content is empty`, 'warning');
         }
 
         this.selector_title.textContent = ContentHelper.capitalize(type);
-        this.paper_container.innerHTML = ""
 
         const contentFile = 'FN-Combined_Structured_UB.json';
 
@@ -154,7 +152,7 @@ export class ContentLoader {
 
 
         }
-        if (!silent) globalEventBus.emit('ui:selctor:show')
+        if (!silent) globalEventBus.emit('ui:selector:show')
     }
 
     async loadFavourites() {

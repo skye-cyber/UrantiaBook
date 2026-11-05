@@ -227,17 +227,17 @@ export const SettingsPage = () => {
             {/* Backdrop */}
             <div
                 ref={backdropRef}
-                className="fixed inset-0 z-[41] bg-black/50 backdrop-brightness-sm hidden transition-all duration-300 safe-area-inset"
+                className="absolute inset-0 z-[41] bg-black/50 backdrop-brightness-sm hidden transition-all duration-300"
                 onClick={() => setIsVisible(false)}
             ></div>
 
             {/* Settings Panel */}
             <div
                 ref={containerRef}
-                className="fixed inset-1 left-1/2 -translate-x-1/2 top-0 bottom-auto right-auto m-auto sm:w-[90vw] max-w-full md:max-w-4xl h-[100svh] bg-white dark:bg-slate-800 rounded-sm sm:rounded-2xl shadow-2xl overflow-hidden hidden translate-y-[100vh] transition-all duration-300 z-[60] safe-area-inset pt-8"
+                className="absolute inset-1 left-1/2 -translate-x-1/2 top-0 bottom-auto right-auto m-auto sm:w-[90vw] max-w-full md:max-w-4xl h-full bg-white dark:bg-slate-800 rounded-sm sm:rounded-2xl shadow-2xl overflow-hidden hidden translate-y-[100vh] transition-all duration-300 z-[60]"
             >
                 {/* Header */}
-                <div className="bg-gradient-to-r from-primary-600 to-primary-800 pt-10 sm:pt-auto p-3 relative">
+                <div className="bg-gradient-to-r from-primary-600 to-primary-800 p-3 relative">
                     <button
                         onClick={() => setIsVisible(false)}
                         className="absolute top-4 right-4 text-3xl text-white/80 hover:text-white transition-all duration-300 rounded-full w-10 h-10 flex items-center justify-center hover:bg-white/20"
@@ -253,7 +253,6 @@ export const SettingsPage = () => {
                         </div>
                         <div>
                             <h2 className="text-3xl font-bold text-white">Settings</h2>
-                            <p className="text-primary-100 mt-1">Customize your UBook experience</p>
                         </div>
                     </div>
 
@@ -289,7 +288,7 @@ export const SettingsPage = () => {
                 </div>
 
                 {/* Content */}
-                <div className="p-6 pb-16 overflow-y-auto h-[calc(100%-180px)] scrollbar-custom">
+                <div className="p-6 pb-16 overflow-y-auto h-[65%] scrollbar-custom">
                     {/* Appearance Tab */}
                     {activeTab === 'appearance' && (
                         <SettingsSection
@@ -655,7 +654,7 @@ export const SettingsPage = () => {
                 </div>
 
                 {/* Footer Actions */}
-                <div className="absolute bottom-8 left-0 right-0 p-4 bg-slate-50 dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700 flex justify-between">
+                <div className="sticky bottom-0 left-0 right-0 p-2 h-fit bg-slate-50 dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700 flex justify-between">
                     <div className="flex gap-3">
                         <button
                             onClick={resetToDefaults}

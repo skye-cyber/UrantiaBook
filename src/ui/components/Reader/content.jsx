@@ -45,7 +45,7 @@ export const ReaderContent = ({ }) => {
 
         // Show context menu on right click
         if (window.innerWidth > 400) {
-            readerSection.current.addEventListener('contextmenu', contextmenu)
+            readerSection.current?.addEventListener('contextmenu', contextmenu)
         }
         globalEventBus.on('keydown:escape', hightlightsearch.removeHighlightedSpans)
         document.addEventListener('selectionchange', handle_selectionchange)
@@ -57,7 +57,6 @@ export const ReaderContent = ({ }) => {
             document.removeEventListener('selectionchange', handle_selectionchange)
             globalEventBus.off('reader:clear', clearReaderContent)
             globalEventBus.off('keydown:escape', hightlightsearch.removeHighlightedSpans)
-            readerSection.current.removeEventListener('click')
         }
     })
 
@@ -67,7 +66,7 @@ export const ReaderContent = ({ }) => {
             ref={readerSection}
             data-portal-container='reader-content'
             id="reader-content"
-            className="portal-root select-text bg-white dark:bg-[#080819] dark:border-[#18184a] rounded-lg px-2 sm:px-3 selection:bg-[#ff007f]/20 dark:selection:bg-sky-400 leading-loose">
+            className="portal-root select-text bg-white dark:bg-[#080819] dark:border-[#18184a] rounded-lg px-2 sm:px-3 selection:bg-[#ff007f]/20 dark:selection:bg-sky-400 leading-loose min-h-[85%]">
         </article>
     )
 }

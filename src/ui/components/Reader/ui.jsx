@@ -1,11 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { ReaderContent } from './content';
 import { ToolTipUI } from '../Tooltips/tooltip';
-import { BookItemSelectorUI } from '../SelectorUI/ItemSelector';
 import { ContextMenuToast, DefaultToast } from '../Notifications/Toasts';
-import { CopyFeedback } from '../StatusUI/ToastsUI';
-import { NotesComposer } from '../ContextMenu/Modals/Notes';
-import { SearchResultPage } from '../../Pages/Search';
 import { Controls } from './controlbar.tsx';
 import { StateManager } from '../../../common/syscore/StatesManager';
 import { BookNavigator } from './navigator';
@@ -60,32 +56,26 @@ export const ReaderUI = ({ }) => {
     })
 
     return (
-        <>
-            <section className="w-screen h-[90dvh] sm:max-h-[100dvh] overflow-y-hidden">
-                <section className='flex justify-center items-center rounded-xl max-w-full md:max-w-3xl mx-auto shadow-xl shadow-y-none shadow-gray-400 dark:shadow-slate-900'>
-                    {/*Hide in mobile devices/small devices */}
-                    {(window.innerWidth > 400) && (
-                        <Controls />)
-                    }
-                </section>
-
-                <div
-                    ref={wrapper}
-                    id="reader-wrapper-container"
-                    className="relative h-[100dvh] bg-white dark:bg-[#080819] text-gray-800 dark:text-gray-100 sm:px-6 md:px-0 rounded-x-xl rounded-y-xl round-t-none max-w-3xl container mx-auto shadow-xl shadow-y-none shadow-gray-200 dark:shadow-slate-900 leading-relaxed prose dark:prose-invert overflow-y-auto transition-colors duration-700 scrollbar-custom">
-                    <ReaderContent />
-                    <ToolTipUI />
-                    {(window.innerWidth <= 400) && (
-                        <NavigatorUi />
-                    )}
-                </div>
-                <DefaultToast />
-                <ContextMenuToast />
+        <section className="w-screen h-[90dvh] sm:max-h-[100dvh] overflow-y-hidden">
+            <section className='flex justify-center items-center rounded-xl max-w-full md:max-w-3xl mx-auto shadow-xl shadow-y-none shadow-gray-400 dark:shadow-slate-900'>
+                {/*Hide in mobile devices/small devices */}
+                {(window.innerWidth > 400) && (
+                    <Controls />)
+                }
             </section>
-            <BookItemSelectorUI />
-            <CopyFeedback />
-            <NotesComposer />
-            <SearchResultPage />
-        </>
+
+            <div
+                ref={wrapper}
+                id="reader-wrapper-container"
+                className="relative h-[100dvh] bg-white dark:bg-[#080819] text-gray-800 dark:text-gray-100 sm:px-6 md:px-0 rounded-x-xl rounded-y-xl round-t-none max-w-3xl container mx-auto shadow-xl shadow-y-none shadow-gray-200 dark:shadow-slate-900 leading-relaxed prose dark:prose-invert overflow-y-auto transition-colors duration-700 scrollbar-custom">
+                <ReaderContent />
+                <ToolTipUI />
+                {(window.innerWidth <= 400) && (
+                    <NavigatorUi />
+                )}
+            </div>
+            <DefaultToast />
+            <ContextMenuToast />
+        </section>
     );
 };
