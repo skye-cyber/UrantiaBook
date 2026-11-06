@@ -66,7 +66,7 @@ export const ReaderContent = ({ }) => {
             ref={readerSection}
             data-portal-container='reader-content'
             id="reader-content"
-            className="portal-root select-text bg-white dark:bg-[#080819] dark:border-[#18184a] rounded-lg px-2 sm:px-3 selection:bg-[#ff007f]/20 dark:selection:bg-sky-400 leading-loose min-h-[85%]">
+            className="portal-root select-text bg-white dark:bg-[#080819] dark:border-[#18184a] rounded-lg px-2 sm:px-3 pb-10 selection:bg-[#ff007f]/20 dark:selection:bg-sky-400 leading-loose min-h-[85%]">
         </article>
     )
 }

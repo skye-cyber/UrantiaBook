@@ -6,6 +6,7 @@ import { waitForElement } from '../../../common/syscore/dom_utils';
 import { modalmanager } from '../../../common/Status/Manager';
 import { ubook } from '../../../common/ubook';
 import { globalEventBus } from '../../../Globals/eventBus';
+import { BookItemInterface } from '../../types/global';
 
 export class ContentLoader {
     private selector_title: HTMLElement | null = null;
@@ -40,6 +41,8 @@ export class ContentLoader {
      * @param silent Items selector interface display stays hidden
      */
     async setForeword(silent = false): Promise<void> {
+        if (!silent) globalEventBus.emit('ui:selector:show');
+
         // 1. Use the helper to wait for selector_title
         const titleEl = await waitForVariable(() => this.selector_title);
 
@@ -50,7 +53,6 @@ export class ContentLoader {
 
         // 2. Proceed with original logic
         titleEl.textContent = 'Foreword';
-        if (!silent) globalEventBus.emit('ui:selector:show');
 
         if (!this.paper_container || !this.reader_section) {
             console.warn("Container elements not found. Aborting setForeword.");
@@ -65,11 +67,12 @@ export class ContentLoader {
      * @param silent Items selector interface display stays hidden
      */
     async setLocalUniverse(silent = false): Promise<void> {
+        if (!silent) globalEventBus.emit('ui:selector:show');
+
         const titleEl = await waitForVariable(() => this.selector_title);
         if (!titleEl || !this.paper_container || !this.reader_section) return;
 
         titleEl.textContent = 'Local Universe';
-        if (!silent) globalEventBus.emit('ui:selector:show');
 
         const reader = new BookReader(this.paper_container, this.reader_section);
         reader.load(ContentHelper.getSource('local_universe_source'));
@@ -79,11 +82,12 @@ export class ContentLoader {
      * @param silent Items selector interface display stays hidden
      */
     async setSuperUniverse(silent = false): Promise<void> {
+        if (!silent) globalEventBus.emit('ui:selector:show');
+
         const titleEl = await waitForVariable(() => this.selector_title);
         if (!titleEl || !this.paper_container || !this.reader_section) return;
 
         titleEl.textContent = 'Central and Superuniverse';
-        if (!silent) globalEventBus.emit('ui:selector:show');
 
         const reader = new BookReader(this.paper_container, this.reader_section);
         reader.load(ContentHelper.getSource('central_superuniverses_source'));
@@ -93,11 +97,12 @@ export class ContentLoader {
      * @param silent Items selector interface display stays hidden
      */
     async setHistoryOfUrantia(silent = false): Promise<void> {
+        if (!silent) globalEventBus.emit('ui:selector:show');
+
         const titleEl = await waitForVariable(() => this.selector_title);
         if (!titleEl || !this.paper_container || !this.reader_section) return;
 
         titleEl.textContent = 'History of Urantia';
-        if (!silent) globalEventBus.emit('ui:selector:show');
 
         const reader = new BookReader(this.paper_container, this.reader_section);
         reader.load(ContentHelper.getSource('history_urantia_source'));
@@ -107,11 +112,12 @@ export class ContentLoader {
      * @param silent Items selector interface display stays hidden
      */
     async setJesusTeachings(silent = false): Promise<void> {
+        if (!silent) globalEventBus.emit('ui:selector:show');
+
         const titleEl = await waitForVariable(() => this.selector_title);
         if (!titleEl || !this.paper_container || !this.reader_section) return;
 
         titleEl.textContent = 'Life and Teachings of Jesus';
-        if (!silent) globalEventBus.emit('ui:selector:show');
 
         const reader = new BookReader(this.paper_container, this.reader_section);
         reader.load(ContentHelper.getSource('jesus_life_teachings_source'));
@@ -122,6 +128,10 @@ export class ContentLoader {
      * @param silent Items selector interface display stays hidden
      */
     async loader(type: 'favourites' | 'bookmarks' = 'favourites', silent = false): Promise<void> {
+        if (!silent) globalEventBus.emit('ui:selector:show');
+
+        setTimeout(() => globalEventBus.emit('ui:selector:loading', false), 0)
+
         let data: any;
         if (type === 'favourites') {
             data = await ubook.favourites.readAll();
@@ -132,7 +142,8 @@ export class ContentLoader {
         const items = data?.[type === 'favourites' ? 'fav' : 'bookmark'];
 
         if (!Array.isArray(items) || items.length === 0) {
-            return modalmanager.showMessage(`${ContentHelper.capitalize(type)} content is empty`, 'warning');
+            modalmanager.showMessage(`${ContentHelper.capitalize(type)} content is empty`, 'warning');
+            return
         }
 
         const titleEl = await waitForVariable(() => this.selector_title);
@@ -143,7 +154,11 @@ export class ContentLoader {
         const contentFile = 'FN-Combined_Structured_UB.json';
 
         const fullData = await ubook.content.read(contentFile);
-        const PartsDataById = Object.fromEntries(fullData.parts.map((part: any) => [part.id, part]));
+        if (!fullData) return
+
+        const PartsDataById = Object.fromEntries((fullData as any).parts.map((part: any) => [part.id, part]));
+
+        let fav_bk_items = []
 
         for (const item of items) {
             const part = PartsDataById[item.part_id];
@@ -164,17 +179,14 @@ export class ContentLoader {
                 section_number: section.section_number,
             };
 
-            reactPortalBridge.showComponentInTarget(
-                'BookItem',
-                'paper-container',
+            fav_bk_items.push(
                 {
                     part: part, paper: paper, section: section, title: title, tag: datatag, struct: struct
-                },
-                'book_section'
-            );
+                }
+            )
         }
 
-        if (!silent) globalEventBus.emit('ui:selector:show');
+        globalEventBus.emit('ui:selector:setitems', fav_bk_items as BookItemInterface[])
     }
 
     async loadFavourites(): Promise<void> {
@@ -190,10 +202,11 @@ export class ContentLoader {
      */
     async renderNotes(silent = false): Promise<void> {
         const notesData = await ubook.notes.readAll();
-        const items = notesData?.notes;
+        const items = notesData ? notesData?.notes : [];
 
         if (!Array.isArray(items) || items.length === 0) {
-            return modalmanager.showMessage('Empty! Nothing to show.', 'warning');
+            modalmanager.showMessage('Empty! Nothing to show.', 'warning');
+            return
         }
 
         reactPortalBridge.closeComponent('notes', true);
@@ -223,8 +236,8 @@ export class ContentLoader {
  */
 export async function waitForVariable<T>(
     getter: () => T | null | undefined,
-                                         timeoutMs = 5000,
-                                         intervalMs = 100
+    timeoutMs = 5000,
+    intervalMs = 100
 ): Promise<T | null> {
     const start = Date.now();
 

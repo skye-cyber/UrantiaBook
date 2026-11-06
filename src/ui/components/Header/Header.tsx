@@ -296,12 +296,12 @@ export const Header = ({ }) => {
 
                     <section
                         ref={mobileOptions}
-                        className={`${mobileOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'} absolute z-[1] right-0 top-full mt-0 block bg-[#160041] dark:bg-[#005866] border border-[#270075] dark:border-[#006676] rounded-bl-md p-1 pr-3 w-fit min-w-36 max-w-52 max-h-[70vh] overflow-y-auto overscroll-contain transition duration-300 space-y-2 pl-[max(0.25rem,env(safe-area-inset-left))] pr-[max(0.75rem,env(safe-area-inset-right))]`}
+                        className={`${mobileOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'} absolute z-[1] right-0 top-full mt-0 block bg-[#160041] dark:bg-[#005866] border border-[#270075] dark:border-[#006676] rounded-bl-md p-4 w-fit min-w-36 max-w-52 max-h-[70vh] overflow-y-auto overscroll-contain transition duration-300 space-y-2 pl-[max(0.25rem,env(safe-area-inset-left))] pr-[max(0.75rem,env(safe-area-inset-right))]`}
                     >
                         <RightSection isMobilePlatform={true} />
 
                         <div className="flex items-center space-x-1">
-                            <span className="text-sm text-white">Font Size:</span>
+                            <span className="text-sm text-white">Size:</span>
                             <div className="flex text-xl border border-[#270075] dark:border-[#005e6f] bg-[#160041] dark:bg-[#004754] text-white p-2 rounded-md space-x-4">
                                 <button
                                     className="text-sm hover:text-[#a78bfa] dark:hover:text-[#00b7cf] min-w-[32px] min-h-[32px]"
@@ -319,7 +319,7 @@ export const Header = ({ }) => {
                         </div>
 
                         <div className="flex items-center space-x-1">
-                            <span className="text-sm text-white">Font:</span>
+                            <span className="text-sm text-white">Family:</span>
                             <div className="relative">
                                 <select
                                     defaultValue={'normal'}

@@ -68,7 +68,7 @@ export const NotesPage = ({ }) => {
                 data-portal-container='notebody'
                 ref={notebody}
                 id="notebody"
-                className="relative z-10 min-w-[40vw] w-full w-full h-full p-6 bg-white dark:bg-gray-900 text-gray-800 dark:text-white rounded-sm sm:rounded-2xl shadow-xl transform scale-90 translate-y-8 opacity-0 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] overflow-hidden">
+                className="relative z-10 min-w-[40vw] w-full sd:w-[80%] lg:w-[60%] h-full p-6 bg-white dark:bg-gray-900 text-gray-800 dark:text-white rounded-sm sm:rounded-2xl shadow-xl transform scale-90 translate-y-8 opacity-0 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] overflow-hidden">
                 <button onClick={closeNotesPage} id="closeModal" className="absolute top-3 right-5 text-gray-500 hover:text-red-500 dark:hover:text-red-400 transition">
                     ✖
                 </button>

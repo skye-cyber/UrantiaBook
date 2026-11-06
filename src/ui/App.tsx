@@ -37,16 +37,16 @@ const App = () => {
         if (setupOk) return;
         let isMounted = true;
 
-        ContentLoader_ins.setForeword();
+        ContentLoader_ins.setForeword(true);
 
         // Just call it directly, because main.tsx already waited for DOM
         waitForElement('[data-tag="0-0-0"]', (el: HTMLElement) => {
-            if (isMounted) el.click();
+            el.click();
         }, { timeout: 3000 } as any);
 
-            setSetupOk(true);
+        setSetupOk(true);
 
-            return () => { isMounted = false; };
+        return () => { isMounted = false; };
     }, [setupOk]);
 
     // Global Event Bus Listener (Runs once on mount)
@@ -58,7 +58,8 @@ const App = () => {
         return () => {
             setter.unsubscribe();
         };
-    }, []);
+    }, [bookItems]);
+
     return (
         <ErrorBoundary>
             <ThemeProvider>
