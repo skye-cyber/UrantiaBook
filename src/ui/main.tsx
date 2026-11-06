@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client';
 import App from './App.tsx';
 import { invoke } from '@tauri-apps/api/core';
 
+
 // Optimized mounting with better error handling and performance
 const mountApp = async () => {
     try {

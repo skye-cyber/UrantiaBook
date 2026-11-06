@@ -23,7 +23,7 @@ import { SearchResultPage } from './Pages/Search.jsx';
 import { BookItemInterface } from './types/global.tsx';
 import { globalEventBus } from '../Globals/eventBus.ts';
 import { ThemeProvider } from './components/Themes/ThemeContext.tsx';
-import { ContentLoader_ins } from './components/Panels/content_loader.jsx';
+import { ContentLoader_ins } from './components/Panels/content_loader.tsx';
 import { waitForElement } from '../common/syscore/dom_utils.js';
 
 const App = () => {
@@ -35,33 +35,18 @@ const App = () => {
 
     useEffect(() => {
         if (setupOk) return;
-
         let isMounted = true;
 
-        const setForeword = () => {
-            if (!isMounted) return;
+        ContentLoader_ins.setForeword();
 
-            ContentLoader_ins.setForeword(true);
-            // Tag is more efficient as it is targeted and dependable
-            waitForElement('[data-tag="0-0-0"]', (el: HTMLElement) => {
-                el.click();
-            }, { timeout: 3000 } as any);
+        // Just call it directly, because main.tsx already waited for DOM
+        waitForElement('[data-tag="0-0-0"]', (el: HTMLElement) => {
+            if (isMounted) el.click();
+        }, { timeout: 3000 } as any);
 
             setSetupOk(true);
-        };
 
-        // Handle DOMContentLoaded safely
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', setForeword);
-        } else {
-            // DOM is already loaded
-            setForeword();
-        }
-
-        return () => {
-            isMounted = false; // Prevents setSetupOk and el.click() after unmount
-            document.removeEventListener('DOMContentLoaded', setForeword);
-        };
+            return () => { isMounted = false; };
     }, [setupOk]);
 
     // Global Event Bus Listener (Runs once on mount)
